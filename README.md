@@ -10,4 +10,4 @@ Desired set of waaypoints are given by :
   • p 2 = (1, 0, 1) to p 3 = (1, 1, 1) in 15 seconds
   • p 3 = (1, 1, 1) to p 4 = (0, 1, 1) in 15 seconds
   • p 4 = (0, 1, 1) to p 5 = (0, 0, 1) in 15 seconds
-#PRAR
+
