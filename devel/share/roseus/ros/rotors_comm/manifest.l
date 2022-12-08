@@ -1,0 +1,1 @@
+/home/prar/rbe502_project/devel/.private/rotors_comm/share/roseus/ros/rotors_comm/manifest.l

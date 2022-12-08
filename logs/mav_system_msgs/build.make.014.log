@@ -1,0 +1,13 @@
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target _mav_system_msgs_generate_messages_check_deps_CpuInfo
+[  0%] Built target _mav_system_msgs_generate_messages_check_deps_ProcessInfo
+[ 25%] Built target mav_system_msgs_generate_messages_py
+[ 41%] Built target mav_system_msgs_generate_messages_lisp
+[ 75%] Built target mav_system_msgs_generate_messages_nodejs
+[ 75%] Built target mav_system_msgs_generate_messages_cpp
+[100%] Built target mav_system_msgs_generate_messages_eus
+[100%] Built target mav_system_msgs_generate_messages

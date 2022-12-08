@@ -1,0 +1,97 @@
+[  0%] Built target roscpp_generate_messages_cpp
+[  0%] Built target mav_msgs_generate_messages_py
+[  0%] Built target nav_msgs_generate_messages_eus
+[  0%] Built target trajectory_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target trajectory_msgs_generate_messages_lisp
+[  0%] Built target sensor_msgs_generate_messages_nodejs
+[  0%] Built target mav_msgs_generate_messages_lisp
+[  0%] Built target actionlib_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target mav_msgs_generate_messages_nodejs
+[  0%] Built target rosgraph_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target geometry_msgs_generate_messages_eus
+[  0%] Built target nav_msgs_generate_messages_lisp
+[  0%] Built target nav_msgs_generate_messages_cpp
+[  0%] Built target nav_msgs_generate_messages_py
+[  0%] Built target geometry_msgs_generate_messages_py
+[  0%] Built target sensor_msgs_generate_messages_py
+[  0%] Built target rosgraph_msgs_generate_messages_eus
+[  0%] Built target rosgraph_msgs_generate_messages_py
+[  0%] Built target geometry_msgs_generate_messages_lisp
+[  0%] Built target roscpp_generate_messages_lisp
+[  0%] Built target trajectory_msgs_generate_messages_cpp
+[  0%] Built target geometry_msgs_generate_messages_cpp
+[  0%] Built target actionlib_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target actionlib_msgs_generate_messages_nodejs
+[  0%] Built target mav_msgs_generate_messages_eus
+[  0%] Built target mav_msgs_generate_messages_cpp
+[  0%] Built target geometry_msgs_generate_messages_nodejs
+[  0%] Built target actionlib_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target actionlib_msgs_generate_messages_cpp
+[  0%] Built target rosgraph_msgs_generate_messages_nodejs
+[  0%] Built target roscpp_generate_messages_py
+[  0%] Built target trajectory_msgs_generate_messages_eus
+[  0%] Built target roscpp_generate_messages_nodejs
+[  0%] Built target trajectory_msgs_generate_messages_py
+[  0%] Built target roscpp_generate_messages_eus
+[  0%] Built target rosgraph_msgs_generate_messages_cpp
+[  0%] Built target sensor_msgs_generate_messages_eus
+[  0%] Built target nav_msgs_generate_messages_nodejs
+[  0%] Built target sensor_msgs_generate_messages_cpp
+[  0%] Built target sensor_msgs_generate_messages_lisp
+[35m[1mScanning dependencies of target crazyflie_complementary_filter[0m
+[35m[1mScanning dependencies of target sensfusion6[0m
+[35m[1mScanning dependencies of target internal_model_controller[0m
+[  3%] [32mBuilding CXX object CMakeFiles/crazyflie_complementary_filter.dir/src/library/crazyflie_complementary_filter.cpp.o[0m
+[  7%] [32mBuilding CXX object CMakeFiles/sensfusion6.dir/src/library/sensfusion6.cpp.o[0m
+[ 11%] [32mBuilding CXX object CMakeFiles/internal_model_controller.dir/src/library/internal_model_controller.cpp.o[0m
+[35m[1mScanning dependencies of target crazyflie_onboard_controller[0m
+[ 15%] [32mBuilding CXX object CMakeFiles/crazyflie_onboard_controller.dir/src/library/crazyflie_onboard_controller.cpp.o[0m
+[35m[1mScanning dependencies of target position_controller[0m
+[35m[1mScanning dependencies of target mellinger_controller[0m
+[35m[1mScanning dependencies of target lee_position_controller[0m
+[35m[1mScanning dependencies of target roll_pitch_yawrate_thrust_controller[0m
+[35m[1mScanning dependencies of target roll_pitch_yawrate_thrust_controller_crazyflie[0m
+[ 19%] [32mBuilding CXX object CMakeFiles/position_controller.dir/src/library/position_controller.cpp.o[0m
+[ 23%] [32mBuilding CXX object CMakeFiles/mellinger_controller.dir/src/library/mellinger_controller.cpp.o[0m
+[ 26%] [32mBuilding CXX object CMakeFiles/lee_position_controller.dir/src/library/lee_position_controller.cpp.o[0m
+[ 30%] [32mBuilding CXX object CMakeFiles/roll_pitch_yawrate_thrust_controller.dir/src/library/roll_pitch_yawrate_thrust_controller.cpp.o[0m
+[ 34%] [32mBuilding CXX object CMakeFiles/roll_pitch_yawrate_thrust_controller_crazyflie.dir/src/library/roll_pitch_yawrate_thrust_crazyflie.cpp.o[0m
+[ 38%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_control/lib/libcrazyflie_complementary_filter.so[0m
+[ 38%] Built target crazyflie_complementary_filter
+[ 42%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_control/lib/libsensfusion6.so[0m
+[ 42%] Built target sensfusion6
+[ 46%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_control/lib/libcrazyflie_onboard_controller.so[0m
+[ 46%] Built target crazyflie_onboard_controller
+[ 50%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_control/lib/libmellinger_controller.so[0m
+[ 50%] Built target mellinger_controller
+[ 53%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_control/lib/libroll_pitch_yawrate_thrust_controller_crazyflie.so[0m
+[ 53%] Built target roll_pitch_yawrate_thrust_controller_crazyflie
+[35m[1mScanning dependencies of target roll_pitch_yawrate_thrust_crazyflie_node[0m
+[ 57%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_control/lib/libinternal_model_controller.so[0m
+[ 61%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_control/lib/libposition_controller.so[0m
+[ 65%] [32mBuilding CXX object CMakeFiles/roll_pitch_yawrate_thrust_crazyflie_node.dir/src/nodes/roll_pitch_yawrate_thrust_crazyflie_node.cpp.o[0m
+[ 65%] Built target internal_model_controller
+[ 65%] Built target position_controller
+[35m[1mScanning dependencies of target position_controller_node[0m
+[ 69%] [32mBuilding CXX object CMakeFiles/position_controller_node.dir/src/nodes/position_controller_node.cpp.o[0m
+[ 73%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_control/lib/libroll_pitch_yawrate_thrust_controller.so[0m
+[ 76%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_control/lib/liblee_position_controller.so[0m
+[ 76%] Built target roll_pitch_yawrate_thrust_controller
+[35m[1mScanning dependencies of target roll_pitch_yawrate_thrust_controller_node[0m
+[ 80%] [32mBuilding CXX object CMakeFiles/roll_pitch_yawrate_thrust_controller_node.dir/src/nodes/roll_pitch_yawrate_thrust_controller_node.cpp.o[0m
+[ 80%] Built target lee_position_controller
+[35m[1mScanning dependencies of target lee_position_controller_node[0m
+[ 84%] [32mBuilding CXX object CMakeFiles/lee_position_controller_node.dir/src/nodes/lee_position_controller_node.cpp.o[0m
+[ 88%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_control/lib/rotors_control/roll_pitch_yawrate_thrust_crazyflie_node[0m
+[ 88%] Built target roll_pitch_yawrate_thrust_crazyflie_node
+[ 92%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_control/lib/rotors_control/position_controller_node[0m
+[ 92%] Built target position_controller_node
+[ 96%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_control/lib/rotors_control/roll_pitch_yawrate_thrust_controller_node[0m
+[ 96%] Built target roll_pitch_yawrate_thrust_controller_node
+[100%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_control/lib/rotors_control/lee_position_controller_node[0m
+[100%] Built target lee_position_controller_node

@@ -1,0 +1,1 @@
+/home/prar/rbe502_project/devel/.private/project/share/roseus/ros/project/manifest.l

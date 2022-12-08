@@ -1,0 +1,8 @@
+prefix=/home/prar/rbe502_project/devel/.private/project
+
+Name: project
+Description: Description of project
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: geometry_msgs mav_msgs nav_msgs roscpp rospy std_msgs

@@ -1,0 +1,8 @@
+prefix=/home/prar/rbe502_project/devel/.private/rotors_gazebo
+
+Name: rotors_gazebo
+Description: Description of rotors_gazebo
+Version: 7.0.1
+Cflags: -I/home/prar/rbe502_project/src/CrazyS/rotors_gazebo/include
+Libs: -L${prefix}/lib -lspline_trajectory_generator
+Requires: geometry_msgs mav_msgs nav_msgs roscpp sensor_msgs gazebo_msgs

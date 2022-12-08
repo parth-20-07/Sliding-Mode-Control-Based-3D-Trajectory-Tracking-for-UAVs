@@ -1,0 +1,25 @@
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target _mav_state_machine_msgs_generate_messages_check_deps_RunTaskService
+[  0%] Built target _mav_state_machine_msgs_generate_messages_check_deps_StartStopTask
+[  7%] [34m[1mGenerating Javascript code from mav_state_machine_msgs/StartStopTask.msg[0m
+[ 15%] [34m[1mGenerating EusLisp code from mav_state_machine_msgs/StartStopTask.msg[0m
+[ 23%] [34m[1mGenerating Javascript code from mav_state_machine_msgs/RunTaskService.srv[0m
+[ 30%] [34m[1mGenerating EusLisp code from mav_state_machine_msgs/RunTaskService.srv[0m
+[ 38%] [34m[1mGenerating Lisp code from mav_state_machine_msgs/RunTaskService.srv[0m
+[ 46%] [34m[1mGenerating Python code from SRV mav_state_machine_msgs/RunTaskService[0m
+[ 61%] [34m[1mGenerating Python from MSG mav_state_machine_msgs/StartStopTask[0m
+[ 61%] [34m[1mGenerating Lisp code from mav_state_machine_msgs/StartStopTask.msg[0m
+[ 69%] [34m[1mGenerating C++ code from mav_state_machine_msgs/RunTaskService.srv[0m
+[ 76%] [34m[1mGenerating C++ code from mav_state_machine_msgs/StartStopTask.msg[0m
+[ 76%] Built target mav_state_machine_msgs_generate_messages_lisp
+[ 76%] Built target mav_state_machine_msgs_generate_messages_nodejs
+[ 84%] Built target mav_state_machine_msgs_generate_messages_eus
+[100%] [34m[1mGenerating Python msg __init__.py for mav_state_machine_msgs[0m
+[100%] [34m[1mGenerating Python srv __init__.py for mav_state_machine_msgs[0m
+[100%] Built target mav_state_machine_msgs_generate_messages_cpp
+[100%] Built target mav_state_machine_msgs_generate_messages_py
+[100%] Built target mav_state_machine_msgs_generate_messages

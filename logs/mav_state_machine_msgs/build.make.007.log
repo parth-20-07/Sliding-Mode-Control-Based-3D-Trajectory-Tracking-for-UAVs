@@ -1,0 +1,13 @@
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target _mav_state_machine_msgs_generate_messages_check_deps_StartStopTask
+[  0%] Built target _mav_state_machine_msgs_generate_messages_check_deps_RunTaskService
+[ 30%] Built target mav_state_machine_msgs_generate_messages_py
+[ 46%] Built target mav_state_machine_msgs_generate_messages_cpp
+[ 61%] Built target mav_state_machine_msgs_generate_messages_lisp
+[ 84%] Built target mav_state_machine_msgs_generate_messages_eus
+[100%] Built target mav_state_machine_msgs_generate_messages_nodejs
+[100%] Built target mav_state_machine_msgs_generate_messages

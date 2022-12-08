@@ -1,0 +1,8 @@
+prefix=/home/prar/rbe502_project/devel/.private/rotors_comm
+
+Name: rotors_comm
+Description: Description of rotors_comm
+Version: 7.0.1
+Cflags: -I/home/prar/rbe502_project/devel/.private/rotors_comm/include
+Libs: -L${prefix}/lib 
+Requires: message_runtime

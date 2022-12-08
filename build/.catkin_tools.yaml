@@ -1,0 +1,6 @@
+devel_space: /home/prar/rbe502_project/devel
+install: false
+install_space: /home/prar/rbe502_project/install
+profile: default
+source_space: /home/prar/rbe502_project/src
+workspace: /home/prar/rbe502_project

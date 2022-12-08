@@ -1,0 +1,86 @@
+[  0%] Built target mav_msgs_generate_messages_nodejs
+[  0%] Built target roscpp_generate_messages_cpp
+[  0%] Built target sensor_msgs_generate_messages_lisp
+[  0%] Built target sensor_msgs_generate_messages_py
+[  0%] Built target roscpp_generate_messages_py
+[  0%] Built target sensor_msgs_generate_messages_eus
+[  0%] Built target geometry_msgs_generate_messages_eus
+[  0%] Built target rosgraph_msgs_generate_messages_py
+[  0%] Built target geometry_msgs_generate_messages_cpp
+[  0%] Built target rosgraph_msgs_generate_messages_nodejs
+[  0%] Built target geometry_msgs_generate_messages_py
+[  0%] Built target gazebo_msgs_generate_messages_nodejs
+[  0%] Built target trajectory_msgs_generate_messages_lisp
+[  0%] Built target nav_msgs_generate_messages_py
+[  0%] Built target trajectory_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_nodejs
+[  0%] Built target nav_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target gazebo_msgs_generate_messages_cpp
+[  0%] Built target gazebo_msgs_generate_messages_lisp
+[  0%] Built target roscpp_generate_messages_lisp
+[  0%] Built target std_srvs_generate_messages_nodejs
+[  0%] Built target nav_msgs_generate_messages_cpp
+[  0%] Built target sensor_msgs_generate_messages_cpp
+[  0%] Built target rosgraph_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target actionlib_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target gazebo_msgs_generate_messages_py
+[  0%] Built target std_srvs_generate_messages_cpp
+[  0%] Built target mav_msgs_generate_messages_lisp
+[  0%] Built target trajectory_msgs_generate_messages_cpp
+[  0%] Built target std_srvs_generate_messages_eus
+[  0%] Built target std_srvs_generate_messages_lisp
+[  0%] Built target geometry_msgs_generate_messages_nodejs
+[  0%] Built target geometry_msgs_generate_messages_lisp
+[  0%] Built target gazebo_msgs_generate_messages_eus
+[  0%] Built target mav_msgs_generate_messages_cpp
+[  0%] Built target rosgraph_msgs_generate_messages_eus
+[  0%] Built target rosgraph_msgs_generate_messages_cpp
+[  0%] Built target trajectory_msgs_generate_messages_py
+[  0%] Built target sensor_msgs_generate_messages_nodejs
+[  0%] Built target mav_msgs_generate_messages_py
+[  0%] Built target std_srvs_generate_messages_py
+[  0%] Built target mav_msgs_generate_messages_eus
+[  0%] Built target nav_msgs_generate_messages_eus
+[  0%] Built target actionlib_msgs_generate_messages_nodejs
+[  0%] Built target std_msgs_generate_messages_eus
+[35m[1mScanning dependencies of target spline_trajectory_generator[0m
+[  0%] Built target trajectory_msgs_generate_messages_eus
+[  0%] Built target actionlib_msgs_generate_messages_lisp
+[  0%] Built target actionlib_msgs_generate_messages_cpp
+[  0%] Built target nav_msgs_generate_messages_lisp
+[  0%] Built target roscpp_generate_messages_eus
+[  0%] Built target roscpp_generate_messages_nodejs
+[  0%] Built target actionlib_msgs_generate_messages_py
+[  6%] [34m[1mGenerating /home/prar/rbe502_project/src/CrazyS/rotors_gazebo/models/iris/iris.sdf[0m
+[35m[1mScanning dependencies of target waypoint_publisher_file[0m
+[35m[1mScanning dependencies of target quaternion_to_rpy[0m
+[35m[1mScanning dependencies of target waypoint_publisher[0m
+[35m[1mScanning dependencies of target hovering_example[0m
+[ 13%] [32mBuilding CXX object CMakeFiles/waypoint_publisher_file.dir/src/nodes/waypoint_publisher_file.cpp.o[0m
+[ 20%] [32mBuilding CXX object CMakeFiles/spline_trajectory_generator.dir/src/library/spline_trajectory_generator.cpp.o[0m
+[ 26%] [32mBuilding CXX object CMakeFiles/waypoint_publisher.dir/src/nodes/waypoint_publisher.cpp.o[0m
+[ 33%] [32mBuilding CXX object CMakeFiles/quaternion_to_rpy.dir/src/nodes/quaternion_to_rpy.cpp.o[0m
+[ 40%] [32mBuilding CXX object CMakeFiles/hovering_example.dir/src/nodes/hovering_example.cpp.o[0m
+
+[ 40%] Built target sdf
+[ 46%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_gazebo/lib/rotors_gazebo/waypoint_publisher[0m
+[ 53%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_gazebo/lib/rotors_gazebo/hovering_example[0m
+[ 53%] Built target waypoint_publisher
+[ 60%] [32m[1mLinking CXX shared library /home/prar/rbe502_project/devel/.private/rotors_gazebo/lib/libspline_trajectory_generator.so[0m
+[ 60%] Built target hovering_example
+[ 66%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_gazebo/lib/rotors_gazebo/quaternion_to_rpy[0m
+[ 66%] Built target spline_trajectory_generator
+[35m[1mScanning dependencies of target hovering_example_spline_swarm[0m
+[35m[1mScanning dependencies of target hovering_example_spline[0m
+[ 73%] [32mBuilding CXX object CMakeFiles/hovering_example_spline.dir/src/nodes/hovering_example_spline.cpp.o[0m
+[ 80%] [32mBuilding CXX object CMakeFiles/hovering_example_spline_swarm.dir/src/nodes/hovering_example_spline_swarm.cpp.o[0m
+[ 86%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_gazebo/lib/rotors_gazebo/waypoint_publisher_file[0m
+[ 86%] Built target quaternion_to_rpy
+[ 86%] Built target waypoint_publisher_file
+[ 93%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_gazebo/lib/rotors_gazebo/hovering_example_spline_swarm[0m
+[100%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_gazebo/lib/rotors_gazebo/hovering_example_spline[0m
+[100%] Built target hovering_example_spline_swarm
+[100%] Built target hovering_example_spline

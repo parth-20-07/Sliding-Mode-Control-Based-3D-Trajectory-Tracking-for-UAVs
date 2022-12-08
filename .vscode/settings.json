@@ -1,0 +1,3 @@
+{
+    "cmake.sourceDirectory": "${workspaceFolder}/src/CrazyS/rotors_gazebo/models/grass_plane/materials"
+}

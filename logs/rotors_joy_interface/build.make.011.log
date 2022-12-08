@@ -1,0 +1,43 @@
+[  0%] Built target sensor_msgs_generate_messages_cpp
+[  0%] Built target sensor_msgs_generate_messages_nodejs
+[  0%] Built target sensor_msgs_generate_messages_lisp
+[  0%] Built target mav_msgs_generate_messages_nodejs
+[  0%] Built target trajectory_msgs_generate_messages_py
+[  0%] Built target trajectory_msgs_generate_messages_lisp
+[  0%] Built target mav_msgs_generate_messages_py
+[  0%] Built target trajectory_msgs_generate_messages_nodejs
+[  0%] Built target trajectory_msgs_generate_messages_eus
+[  0%] Built target trajectory_msgs_generate_messages_cpp
+[  0%] Built target rosgraph_msgs_generate_messages_eus
+[  0%] Built target rosgraph_msgs_generate_messages_cpp
+[  0%] Built target roscpp_generate_messages_nodejs
+[  0%] Built target geometry_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_eus
+[  0%] Built target sensor_msgs_generate_messages_py
+[  0%] Built target geometry_msgs_generate_messages_cpp
+[  0%] Built target roscpp_generate_messages_py
+[  0%] Built target rosgraph_msgs_generate_messages_py
+[  0%] Built target geometry_msgs_generate_messages_nodejs
+[  0%] Built target rosgraph_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_lisp
+[  0%] Built target geometry_msgs_generate_messages_py
+[  0%] Built target roscpp_generate_messages_eus
+[  0%] Built target mav_msgs_generate_messages_cpp
+[  0%] Built target roscpp_generate_messages_lisp
+[  0%] Built target sensor_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_cpp
+[  0%] Built target rosgraph_msgs_generate_messages_nodejs
+[  0%] Built target geometry_msgs_generate_messages_eus
+[  0%] Built target std_msgs_generate_messages_py
+[  0%] Built target mav_msgs_generate_messages_eus
+[  0%] Built target roscpp_generate_messages_cpp
+[  0%] Built target mav_msgs_generate_messages_lisp
+[  0%] Built target std_msgs_generate_messages_nodejs
+[35m[1mScanning dependencies of target rotors_joy_interface_crazyflie[0m
+[35m[1mScanning dependencies of target rotors_joy_interface[0m
+[ 25%] [32mBuilding CXX object CMakeFiles/rotors_joy_interface_crazyflie.dir/src/joy_crazyflie.cpp.o[0m
+[ 50%] [32mBuilding CXX object CMakeFiles/rotors_joy_interface.dir/src/joy.cpp.o[0m
+[ 75%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_joy_interface/lib/rotors_joy_interface/rotors_joy_interface[0m
+[ 75%] Built target rotors_joy_interface
+[100%] [32m[1mLinking CXX executable /home/prar/rbe502_project/devel/.private/rotors_joy_interface/lib/rotors_joy_interface/rotors_joy_interface_crazyflie[0m
+[100%] Built target rotors_joy_interface_crazyflie
