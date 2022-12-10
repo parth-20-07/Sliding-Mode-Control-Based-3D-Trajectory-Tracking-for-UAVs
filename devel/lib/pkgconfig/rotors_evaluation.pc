@@ -1,1 +1,0 @@
-/home/prar/rbe502_project/devel/.private/rotors_evaluation/lib/pkgconfig/rotors_evaluation.pc

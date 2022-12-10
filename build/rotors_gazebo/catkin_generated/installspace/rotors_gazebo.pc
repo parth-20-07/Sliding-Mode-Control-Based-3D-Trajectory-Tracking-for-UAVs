@@ -1,8 +1,0 @@
-prefix=/home/prar/rbe502_project/install
-
-Name: rotors_gazebo
-Description: Description of rotors_gazebo
-Version: 7.0.1
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -lspline_trajectory_generator
-Requires: geometry_msgs mav_msgs nav_msgs roscpp sensor_msgs gazebo_msgs

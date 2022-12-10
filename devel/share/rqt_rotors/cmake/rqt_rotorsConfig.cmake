@@ -1,1 +1,0 @@
-/home/prar/rbe502_project/devel/.private/rqt_rotors/share/rqt_rotors/cmake/rqt_rotorsConfig.cmake

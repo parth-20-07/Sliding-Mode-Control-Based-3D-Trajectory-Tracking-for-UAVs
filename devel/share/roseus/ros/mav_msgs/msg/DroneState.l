@@ -1,1 +1,0 @@
-/home/prar/rbe502_project/devel/.private/mav_msgs/share/roseus/ros/mav_msgs/msg/DroneState.l

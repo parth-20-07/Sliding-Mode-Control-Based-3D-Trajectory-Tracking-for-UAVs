@@ -1,8 +1,0 @@
-prefix=/home/prar/rbe502_project/install
-
-Name: rotors_evaluation
-Description: Description of rotors_evaluation
-Version: 7.0.1
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
