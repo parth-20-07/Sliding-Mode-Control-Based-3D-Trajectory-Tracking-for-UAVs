@@ -4,6 +4,7 @@
 
 - [Introduction](#introduction)
 - [Dynamic Model](#dynamic-model)
+- [Problem Statement](#problem-statement)
 - [Setup the environment](#setup-the-environment)
     - [Install ROS1 Noetic](#install-ros1-noetic)
     - [Setup Crazyflie 2.0 Quadrotor in Gazebo](#setup-crazyflie-20-quadrotor-in-gazebo)
@@ -33,19 +34,6 @@ Crazyflie 2.0 Quadrotor Gazebo Simulation
 ![Drone Model](/Resources/Photos/Gazebo.png)
 
 _Note: The Complete project is build and tested on Ubuntu 20.04LTS with ROS Noetic and not tested on any other system. Kindly proceed with caution and loads of google usage for porting it to any other system. And as always, common sense is must before anything!!_
-
-**Sliding_mode_controller_for_quadrotor**
-
-sliding mode controller is designed for altitude and attitude control of the Crazyflie 2.0 to enable the
-quadrotor to track desired trajectories and visit a set of desired waypoints.
-
-Desired set of waaypoints are given by :
-
-- p 0 = (0, 0, 0) to p 1 = (0, 0, 1) in 5 seconds
-- p 1 = (0, 0, 1) to p 2 = (1, 0, 1) in 15 seconds
-- p 2 = (1, 0, 1) to p 3 = (1, 1, 1) in 15 seconds
-- p 3 = (1, 1, 1) to p 4 = (0, 1, 1) in 15 seconds
-- p 4 = (0, 1, 1) to p 5 = (0, 0, 1) in 15 seconds
 
 # Dynamic Model
 The quadrotor model is shown below.
@@ -101,6 +89,20 @@ The physical parameters for the Crazyflie 2.0 hardware are listed below
 |Rotor minimum speed|$\omega_{min}$|$0\ rad/s$|
 
 _Remark 1: As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles._
+
+# Problem Statement
+Design a sliding mode controller for _altitude_ and _attitude_ control of the Crazyflie 2.0 to enable the quadrotor to track desired trajectories and visit a set of desired waypoints. 
+
+The main components of the project are described below.
+
+**Part 1.** Write a MATLAB or Python script to generate quintic (fifth-order) trajectories (position, velocity and acceleration) for the translational coordinates $(x, y, z)$ of Crazyflie. The quadrotor is supposed to start from the origin $p_{0} = (0, 0, 0)$ and visit five waypoints in sequence. The waypoints to visit are:
+- $p_{0} = (0, 0, 0)$ to $p_{1} = (0, 0, 1)$ in 5 seconds
+- $p_{1} = (0, 0, 1)$ to $p_{2} = (1, 0, 1)$ in 15 seconds
+- $p_{2} = (1, 0, 1)$ to $p_{3} = (1, 1, 1)$ in 15 seconds
+- $p_{3} = (1, 1, 1)$ to $p_{4} = (0, 1, 1)$ in 15 seconds
+- $p_{4} = (0, 1, 1)$ to $p_{5} = (0, 0, 1)$ in 15 seconds
+
+The sequence of visiting the waypoints does matter. The velocity and acceleration at each waypoint must be equal to zero.
 
 # Setup the environment
 
