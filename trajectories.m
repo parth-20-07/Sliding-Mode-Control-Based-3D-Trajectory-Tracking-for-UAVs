@@ -1,13 +1,5 @@
-p0 = [ 0 0 0];
-p1 = [ 0 0 1];
-p2 = [ 1 0 1];
-p3 = [ 1 1 1];
-p4 = [ 0 1 1];
-p5 = [ 0 0 1];
 
-t1 = 0;
-t1_f = 5;
-t2_f = 15;
+
 
 
 
@@ -77,10 +69,6 @@ ylabel('Y')
 zlabel('Z')
 hold off;
 
-
-
-
-  
 
 function ret = calcTraj(t0,tf,P0,PF)
     syms currT
