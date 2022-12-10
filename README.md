@@ -90,7 +90,7 @@ The physical parameters for the Crazyflie 2.0 hardware are listed below
 |Rotor maximum speed|$\omega_{max}$|$2618\ rad/s$|
 |Rotor minimum speed|$\omega_{min}$|$0\ rad/s$|
 
-_Remark 1: As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles $\phi$, $\theta$ and $\psi$._
+_Remark 1: As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles $ \phi $, $ \theta $ and $ \psi $._
 
 # Setup the environment
 
