@@ -6,12 +6,6 @@
 - [Setup the environment](#setup-the-environment)
     - [Install ROS1 Noetic](#install-ros1-noetic)
     - [Setup Crazyflie 2.0 Quadrotor in Gazebo](#setup-crazyflie-20-quadrotor-in-gazebo)
-- [Interested in Editing the project for your own use?](#interested-in-editing-the-project-for-your-own-use)
-    - [Collect the Softwares to setup the project](#collect-the-softwares-to-setup-the-project)
-        - [Collect the Project Files](#collect-the-project-files)
-        - [Install ROS1 - Noetic](#install-ros1---noetic)
-    - [Setup Environment](#setup-environment)
-    - [Setup Project](#setup-project)
         - [What each scripts contain?](#what-each-scripts-contain)
 - [Designer Details](#designer-details)
 - [Acknowledgements](#acknowledgements)
@@ -179,17 +173,6 @@ roslaunch rotors_gazebo crazyflie2_without_controller.launch
 
 Congrats, All the setup is done for the simulation to start. You can start writing your own algorithm if you want to!!
 
-# Interested in Editing the project for your own use?
-
-## Collect the Softwares to setup the project
-
-### Collect the Project Files
-
-### Install ROS1 - Noetic
-
-## Setup Environment
-
-## Setup Project
 
 ### What each scripts contain?
 
