@@ -5,6 +5,7 @@
 - [Introduction](#introduction)
 - [Setup the environment](#setup-the-environment)
     - [Install ROS1 Noetic](#install-ros1-noetic)
+    - [Setup Crazyflie 2.0 Quadrotor in Gazebo](#setup-crazyflie-20-quadrotor-in-gazebo)
 - [Interested in Editing the project for your own use?](#interested-in-editing-the-project-for-your-own-use)
     - [Collect the Softwares to setup the project](#collect-the-softwares-to-setup-the-project)
         - [Collect the Project Files](#collect-the-project-files)
@@ -124,6 +125,59 @@ Desired set of waaypoints are given by :
     catkin_make
     ```
 
+## Setup Crazyflie 2.0 Quadrotor in Gazebo
+To set up the Crazyflie 2.0 quadrotor in Gazebo, we need to install additional ROS dependencies for building packages as below:
+```
+sudo apt update
+sudo apt install ros-noetic-joy ros-noetic-octomap-ros ros-noetic-mavlink
+sudo apt install ros-noetic-octomap-mapping ros-noetic-control-toolbox
+sudo apt install python3-vcstool python3-catkin-tools protobuf-compiler libgoogle-glog-dev
+rosdep update
+sudo apt-get install ros-noetic-ros libgoogle-glog-dev
+```
+
+We are now ready to create a new ROS workspace and download the ROS packages for the robot:
+```
+mkdir -p ~/rbe502_project/src
+cd ~/rbe502_project/src
+catkin_init_workspace # initialize your catkin workspace
+cd ~/rbe502_project
+catkin init
+catkin build -j1
+cd ~/rbe502_project/src
+git clone -b dev/ros-noetic https://github.com/gsilano/CrazyS.git
+git clone -b med18_gazebo9 https://github.com/gsilano/mav_comm.git
+```
+_Note: a new ROS workspace is needed for the project, because the CrazyS Gazebo package is built using the `catkin build` tool, instead of `catkin_make`._
+
+_Note: -j1 in catkin build is for safety so it does not cause you computer to hang. It makes your code to build on just one core. Slow but ensures it compiles without issues_
+
+We need to build the project workspace using `python_catkin_tools` , therefore we need to configure it:
+```
+cd ~/rbe502_project
+rosdep install --from-paths src -i
+rosdep update
+catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DCATKIN_ENABLE_TESTING=False
+catkin build -j1
+```
+_This is gonna take a lot of time. Like a real lot. So maybe make yourself a cup of coffee meanwhile? If you don't like coffee, I don't know your motivation to live :(_
+
+Do not forget to add sourcing to your `.bashrc` file:
+```
+echo "source ~/rbe502_project/devel/setup.bash" >> ~/.bashrc
+source ~/.bashrc
+```
+With all dependencies ready, we can build the ROS package by the following commands:
+```
+cd ~/rbe502_project
+catkin build -j1
+```
+To spawn the quadrotor in Gazebo, we can run the following launch file:
+```
+roslaunch rotors_gazebo crazyflie2_without_controller.launch
+```
+
+Congrats, All the setup is done for the simulation to start. You can start writing your own algorithm if you want to!!
 
 # Interested in Editing the project for your own use?
 
