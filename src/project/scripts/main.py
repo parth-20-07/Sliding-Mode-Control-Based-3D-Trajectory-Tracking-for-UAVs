@@ -72,8 +72,8 @@ class Quadrotor():
 
         motor_speed = Actuators() 
         # note we need to convert in motor velocities
-        #motor_speed.angular_velocities = [motor_vel[0,0], motor_vel[1,0],motor_vel[2,0], motor_vel[3,0]]
-        motor_speed.angular_velocities = [1, 1,0.5,0.1]
+        motor_speed.angular_velocities = [motor_vel[0,0], motor_vel[1,0],motor_vel[2,0], motor_vel[3,0]]
+        #motor_speed.angular_velocities = [1, 1,0.5,0.1]
     
         self.motor_speed_pub.publish(motor_speed)
       
