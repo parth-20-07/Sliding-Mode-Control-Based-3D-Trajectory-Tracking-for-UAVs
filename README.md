@@ -54,9 +54,7 @@ The quadrotor model is shown below.
 
 Considering two coordinate frames specifically the world coordinate frame - $O_{W}$ and the body coordinate frame $O_{B}$ - the generalized coordinates for a quadrotor model are defined as:
 
-$$
-q = [x\: y\: z\: \phi\: \theta\:\psi]^{T}
-$$
+$q = [x\: y\: z\: \phi\: \theta\:\psi]^{T}$
 
 with the translational coordinates $x$, $y$, $z$ with respect to the world frame, and the roll $\phi$, pitch $\theta$ and yaw $\psi$ angles with respect to the body frame.
 
