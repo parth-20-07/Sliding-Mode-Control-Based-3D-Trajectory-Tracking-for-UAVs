@@ -50,12 +50,30 @@ class Quadrotor():
         self.w_max = 2168  # maximum rotary speed
         self.w_min = 0  # minimum rotation speed
 
+        self.u1 = 0
+        self.u2 = 0
+        self.u3 = 0
+        self.u4 = 0
+
+        self.w1 = 0
+        self.w2 = 0
+        self.w3 = 0
+        self.w4 = 0
+
+        #!: Tune the Kp and Kd Values here
+        self.kpx = 0
+        self.kdx = 0
+        self.kpy = 0
+        self.kdy = 0
+
+        #!: Tune the lambda values
         self.lamda1 = 0
         self.lamda2 = 0
         self.lamda3 = 0
         self.lamda4 = 0
 
     def traj_evaluate(self):
+        # TODO: Trajectory Inputs
         if (self.t < 5):
             pos1 = np.array([0, 0, 0.0800*self.t**3 - 0.0240 *
                             self.t**4 + 0.0019*self.t**5])
@@ -105,14 +123,54 @@ class Quadrotor():
         posd = np.round(posd, 2)
         veld = np.round(veld, 2)
         accd = np.round(accd, 2)
-        print(posd)
-        print(veld)
-        print(accd)
 
-        # TODO: implement the Sliding Mode Control laws designed in Part 2 to calculate the control inputs "u"
+        # !: implement the Sliding Mode Control laws designed in Part 2 to calculate the control inputs "u"
+        # TODO: Writing the F_x and F_y to calculate theta_d and phi_d
+        force_x = self.m * \
+            ((-self.kpx*(xyz[0] - posd[0])) +
+             (-self.kdx*(xyz_dot[0] - veld[0])) + accd[0])
+        force_y = self.m * \
+            ((-self.kpy*(xyz[1] - posd[1])) +
+             (-self.kdy*(xyz_dot[1] - veld[1])) + accd[1])
+        theta_d = np.arcsin(force_x/self.u1)
+        phi_d = np.arcsin(-force_y/self.u1)
+
         # REMARK: wrap the roll-pitch-yaw angle errors to [-pi to pi]
         # TODO: convert the desired control inputs "u" to desired rotor velocities "motor_vel" by using the "allocation matrix"
-        # TODO: maintain the rotor velocities within the valid range of [0 to 2618]
+        allocation_matrix = np.matrix(
+            [
+                1/(4*self.kf),
+                ((-sqrt(2))/(4*self.kf*self.l)),
+                ((-sqrt(2))/(4*self.kf*self.l)),
+                (1/(4*self.kf*self.km))
+            ],
+            [
+                1/(4*self.kf),
+                ((-sqrt(2))/(4*self.kf*self.l)),
+                ((sqrt(2))/(4*self.kf*self.l)),
+                (1/(4*self.kf*self.km))
+            ],
+            [
+                1/(4*self.kf),
+                ((sqrt(2))/(4*self.kf*self.l)),
+                ((sqrt(2))/(4*self.kf*self.l)),
+                (-1/(4*self.kf*self.km))
+            ],
+            [
+                1/(4*self.kf),
+                ((sqrt(2))/(4*self.kf*self.l)),
+                ((-sqrt(2))/(4*self.kf*self.l)),
+                (1/(4*self.kf*self.km))
+            ],
+        )
+        u_matrix = np.matrix([self.u1], [self.u2], [self.u3], [self.u4])
+        angular_velocity_matrix = sqrt(np.matmul(allocation_matrix, u_matrix))
+        self.w1 = angular_velocity_matrix[0]
+        self.w2 = angular_velocity_matrix[1]
+        self.w3 = angular_velocity_matrix[2]
+        self.w4 = angular_velocity_matrix[3]
+
+        # !: maintain the rotor velocities within the valid range of [0 to 2618]
         # publish the motor velocities to the associated ROS topic
 
         motor_speed = Actuators()
@@ -162,12 +220,11 @@ class Quadrotor():
 
     # save the actual trajectory data
     def save_data(self):
-        # TODO: update the path below with the correct path
-        with open("/home/prar/rbe502_project/src/project/scripts/log.pkl",
-                  "wb") as fp:
+        # !: update the path below with the correct path. Bring Relative Path
+        with open("/home/prar/rbe502_project/src/project/scripts/log.pkl", "wb") as fp:
             self.mutex_lock_on = True
-            pickle.dump([self.t_series, self.x_series, self.y_series, self.
-                         z_series], fp)
+            pickle.dump([self.t_series, self.x_series,
+                        self.y_series, self.z_series], fp)
 
 
 if __name__ == '__main__':
