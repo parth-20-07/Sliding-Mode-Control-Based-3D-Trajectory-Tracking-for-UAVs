@@ -4,11 +4,12 @@
 
 - [Introduction](#introduction)
 - [Dynamic Model](#dynamic-model)
-- [Problem Statement](#problem-statement)
 - [Setup the environment](#setup-the-environment)
     - [Install ROS1 Noetic](#install-ros1-noetic)
     - [Setup Crazyflie 2.0 Quadrotor in Gazebo](#setup-crazyflie-20-quadrotor-in-gazebo)
-        - [What each scripts contain?](#what-each-scripts-contain)
+- [Problem Statement](#problem-statement)
+- [What each scripts contain?](#what-each-scripts-contain)
+- [Packages used](#packages-used)
 - [Designer Details](#designer-details)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -89,20 +90,6 @@ The physical parameters for the Crazyflie 2.0 hardware are listed below
 |Rotor minimum speed|$\omega_{min}$|$0\ rad/s$|
 
 _Remark 1: As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles._
-
-# Problem Statement
-Design a sliding mode controller for _altitude_ and _attitude_ control of the Crazyflie 2.0 to enable the quadrotor to track desired trajectories and visit a set of desired waypoints. 
-
-The main components of the project are described below.
-
-**Part 1.** Write a MATLAB or Python script to generate quintic (fifth-order) trajectories (position, velocity and acceleration) for the translational coordinates $(x, y, z)$ of Crazyflie. The quadrotor is supposed to start from the origin $p_{0} = (0, 0, 0)$ and visit five waypoints in sequence. The waypoints to visit are:
-- $p_{0} = (0, 0, 0)$ to $p_{1} = (0, 0, 1)$ in 5 seconds
-- $p_{1} = (0, 0, 1)$ to $p_{2} = (1, 0, 1)$ in 15 seconds
-- $p_{2} = (1, 0, 1)$ to $p_{3} = (1, 1, 1)$ in 15 seconds
-- $p_{3} = (1, 1, 1)$ to $p_{4} = (0, 1, 1)$ in 15 seconds
-- $p_{4} = (0, 1, 1)$ to $p_{5} = (0, 0, 1)$ in 15 seconds
-
-The sequence of visiting the waypoints does matter. The velocity and acceleration at each waypoint must be equal to zero.
 
 # Setup the environment
 
@@ -231,8 +218,28 @@ roslaunch rotors_gazebo crazyflie2_without_controller.launch
 
 Congrats, All the setup is done for the simulation to start. You can start writing your own algorithm if you want to!!
 
+# Problem Statement
+Design a sliding mode controller for _altitude_ and _attitude_ control of the Crazyflie 2.0 to enable the quadrotor to track desired trajectories and visit a set of desired waypoints. 
 
-### What each scripts contain?
+The main components of the project are described below.
+
+**Part 1.** Write a MATLAB or Python script to generate quintic (fifth-order) trajectories (position, velocity and acceleration) for the translational coordinates $(x, y, z)$ of Crazyflie. The quadrotor is supposed to start from the origin $p_{0} = (0, 0, 0)$ and visit five waypoints in sequence. The waypoints to visit are:
+- $p_{0} = (0, 0, 0)$ to $p_{1} = (0, 0, 1)$ in 5 seconds
+- $p_{1} = (0, 0, 1)$ to $p_{2} = (1, 0, 1)$ in 15 seconds
+- $p_{2} = (1, 0, 1)$ to $p_{3} = (1, 1, 1)$ in 15 seconds
+- $p_{3} = (1, 1, 1)$ to $p_{4} = (0, 1, 1)$ in 15 seconds
+- $p_{4} = (0, 1, 1)$ to $p_{5} = (0, 0, 1)$ in 15 seconds
+
+The sequence of visiting the waypoints does matter. The velocity and acceleration at each waypoint must be equal to zero.
+
+**Part 2.** Considering the equations of motion provided above, design boundary layer-based sliding mode control laws for the $z,\phi,\theta,\psi$ coordinates of the quadrotor to track desired trajectories $z_{d}, \phi_{d}, \theta_{d},$ and $\psi_{d}$.
+
+
+# What each scripts contain?
+
+# Packages used
+- [Symbolic Python (sympy)](https://github.com/sympy/sympy)
+- matplotlib
 
 # Designer Details
 
@@ -241,7 +248,7 @@ Congrats, All the setup is done for the simulation to start. You can start writi
   - RBE 502: Robot Control - Final Project
 - Designed by:
   - [Parth Patel](mailto:parth.pmech@gmail.com)
-  - [Prarthana Sigedar](mailto:)
+  - [Prarthana Sigedar](mailto:prarthana.sigedar@gmail.com)
 
 # Acknowledgements
 

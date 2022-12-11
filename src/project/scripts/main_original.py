@@ -11,6 +11,7 @@ from mav_msgs.msg import Actuators
 from geometry_msgs.msg import Twist, Pose2D
 import pickle
 import os
+import matlab.engine
 
 class Quadrotor():
     def __init__(self):
@@ -29,6 +30,8 @@ class Quadrotor():
         self.mutex_lock_on = False
         rospy.on_shutdown(self.save_data)
         # TODO: include initialization codes if needed
+        eng = matlab.engine.start_matlab()
+        eng.triarea(nargout=0)
 
     def traj_evaluate(self):
 
