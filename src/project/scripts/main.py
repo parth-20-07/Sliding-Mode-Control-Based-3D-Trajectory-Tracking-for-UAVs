@@ -62,14 +62,14 @@ class Quadrotor():
 
         #!: Tune the lambda values
         self.lamda1 = 0.001
-        self.lamda2 = 0.000001
-        self.lamda3 = 0.000001
-        self.lamda4 = 0.000001
+        self.lamda2 = 0.0000000000001
+        self.lamda3 = 0.0000000000001
+        self.lamda4 = 0.0000000000001
 
         self.k1 = 0.001
-        self.k2 = 0.000005
-        self.k3 = 0.000005
-        self.k4 = 0.000005
+        self.k2 = 0.000000000000005
+        self.k3 = 0.000000000000005
+        self.k4 = 0.000000000000005
 
         self.theta_d = 0
         self.phi_d = 0
@@ -77,7 +77,7 @@ class Quadrotor():
         self.calculate_k = True
 
         # Acceptable Tolerance
-        self.tol = 0.1
+        self.tol = 0.01
 
     def traj_evaluate(self):
         # TODO: Trajectory Inputs
@@ -132,16 +132,11 @@ class Quadrotor():
         #                     2 - 0.00015802 * t ** 3, 0])
         #     return pos5, vel5, acc5
         else:
-            return 0, 0, 1
+            return [0, 0, 1], [0, 0, 0], [0, 0, 0]
 
     def saturation(self, sliding_function):
-        sat = 0
-        if sliding_function > self.tol:
-            sat = 1
-        elif sliding_function < -self.tol:
-            sat = -1
-        else:
-            sat = sliding_function/self.tol
+        sat = min(max(sliding_function/self.tol, -1), 1)
+        print(f"sat: {sat}")
         return sat
 
     def smc_control(self, xyz, xyz_dot, rpy, rpy_dot):
@@ -166,22 +161,19 @@ class Quadrotor():
         if (np.isnan(xyz_dot[2][0])):
             xyz_dot[2][0] = 0
 
-        print(xyz_dot[2])
-        print(veld[2])
-        print(xyz[2])
-        print(posd[2])
         s1 = (xyz_dot[2]-veld[2]) + self.lamda1*(xyz[2]-posd[2])
         s2 = (dphi) + self.lamda1*(phi - self.phi_d)
         s3 = (dtheta) + self.lamda1*(theta - self.theta_d)
         s4 = (dpsi) + self.lamda1*(psi)
 
         self.u1 = (((self.m/(cos(theta)*cos(phi)))*(self.g +
-                   accd[2]+(self.lamda1*(xyz_dot[2]-veld[2]))))+self.k1)*self.saturation(s1)
+                   accd[2]-(self.lamda1*(xyz_dot[2]-veld[2]))))+self.k1)*self.saturation(s1)
+        print(f"U1: {self.u1}")
         self.u2 = - ((dtheta*dphi*(self.Iy-self.Iz)) -
                      (self.Ip*self.ohm*dtheta)+(self.lamda2*self.Ix*dtheta)+self.k2)*self.saturation(s2)
         self.u3 = - ((dphi*dpsi*(self.Iz-self.Ix)) +
                      (self.Ip*self.ohm*dphi)+(self.lamda2*self.Iy*dtheta)+self.k3)*self.saturation(s3)
-        self.u4 = - ((dphi*dpsi*(self.Ix-self.Iy)) +
+        self.u4 = - ((dphi*dtheta*(self.Ix-self.Iy)) +
                      (self.lamda2*self.Iz*dpsi)+self.k4)*self.saturation(s4)
 
         # TODO: convert the desired control inputs "u" to desired rotor velocities "motor_vel" by using the "allocation matrix"
