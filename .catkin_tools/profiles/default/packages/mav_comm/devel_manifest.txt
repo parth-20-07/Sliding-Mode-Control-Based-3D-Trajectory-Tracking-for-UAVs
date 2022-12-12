@@ -1,2 +1,2 @@
 mav_comm/mav_comm
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/.private/mav_comm/cmake.lock /home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/./cmake.lock
+/home/prar/Sliding_mode_controller_for_quadrotor/devel/.private/mav_comm/cmake.lock /home/prar/Sliding_mode_controller_for_quadrotor/devel/./cmake.lock

@@ -50,16 +50,17 @@ class Quadrotor():
         self.w_max = 2168  # maximum rotary speed
         self.w_min = 0  # minimum rotation speed
 
-        self.u1 = 0
-        self.u2 = 0
-        self.u3 = 0
-        self.u4 = 0
+        self.u1 = 2
+        self.u2 = 1
+        self.u3 = -1
+        self.u4 = 3
 
         self.w1 = 0
         self.w2 = 0
         self.w3 = 0
         self.w4 = 0
 
+        self.ohm = 0
         #!: Tune the Kp and Kd Values here
         self.kpx = 0
         self.kdx = 0
@@ -71,6 +72,15 @@ class Quadrotor():
         self.lamda2 = 0
         self.lamda3 = 0
         self.lamda4 = 0
+
+        self.k1 = 0
+        self.k2 = 0
+        self.k3 = 0
+        self.k4 = 0
+        
+        # Acceptable Tolerance
+        self.tol = 0.1
+
 
     def traj_evaluate(self):
         # TODO: Trajectory Inputs
@@ -116,8 +126,30 @@ class Quadrotor():
             return pos5, vel5, acc5
         else:
             return exit
+    
+    def wraptopi(angle):
+        if abs(angle) > pi:
+            angle = abs(pi-abs(angle))
+        
+        return angle
+
+    
+    def saturation():
+        if self.s > self.tol:
+            sat = 1
+            return sat
+        elif s < -self.tol:
+            sat = -1
+            return sat
+        else:
+            sat = s/phi
+            return sat
+
 
     def smc_control(self, xyz, xyz_dot, rpy, rpy_dot):
+        print("xyz",xyz)
+        print("xyz_dot",xyz_dot)
+
         # obtain the desired values by evaluating the corresponding trajectories
         posd, veld, accd = self.traj_evaluate()
         posd = np.round(posd, 2)
@@ -125,51 +157,55 @@ class Quadrotor():
         accd = np.round(accd, 2)
 
         # !: implement the Sliding Mode Control laws designed in Part 2 to calculate the control inputs "u"
-        # TODO: Writing the F_x and F_y to calculate theta_d and phi_d
-        force_x = self.m * \
-            ((-self.kpx*(xyz[0] - posd[0])) +
-             (-self.kdx*(xyz_dot[0] - veld[0])) + accd[0])
-        force_y = self.m * \
-            ((-self.kpy*(xyz[1] - posd[1])) +
-             (-self.kdy*(xyz_dot[1] - veld[1])) + accd[1])
-        theta_d = np.arcsin(force_x/self.u1)
-        phi_d = np.arcsin(-force_y/self.u1)
+        self.s1  = (xyz_dot[2]-veld[2]) + self.lamda1*(xyz[2]-posd[2])
+        self.u1 =  self.m*(self.g + accd - self.lamda1*(xyz_dot[2] - veld) - self.k1*self.saturation(self.s1))/(cos(rpy[0])*cos(rpy[1]))
+
 
         # REMARK: wrap the roll-pitch-yaw angle errors to [-pi to pi]
+    
+
         # TODO: convert the desired control inputs "u" to desired rotor velocities "motor_vel" by using the "allocation matrix"
         allocation_matrix = np.matrix(
-            [
-                1/(4*self.kf),
-                ((-sqrt(2))/(4*self.kf*self.l)),
-                ((-sqrt(2))/(4*self.kf*self.l)),
-                (1/(4*self.kf*self.km))
-            ],
-            [
-                1/(4*self.kf),
-                ((-sqrt(2))/(4*self.kf*self.l)),
-                ((sqrt(2))/(4*self.kf*self.l)),
-                (1/(4*self.kf*self.km))
-            ],
-            [
-                1/(4*self.kf),
-                ((sqrt(2))/(4*self.kf*self.l)),
-                ((sqrt(2))/(4*self.kf*self.l)),
-                (-1/(4*self.kf*self.km))
-            ],
-            [
-                1/(4*self.kf),
-                ((sqrt(2))/(4*self.kf*self.l)),
-                ((-sqrt(2))/(4*self.kf*self.l)),
-                (1/(4*self.kf*self.km))
-            ],
-        )
-        u_matrix = np.matrix([self.u1], [self.u2], [self.u3], [self.u4])
-        angular_velocity_matrix = sqrt(np.matmul(allocation_matrix, u_matrix))
-        self.w1 = angular_velocity_matrix[0]
-        self.w2 = angular_velocity_matrix[1]
-        self.w3 = angular_velocity_matrix[2]
-        self.w4 = angular_velocity_matrix[3]
+            [[1/(4*self.kf),((-sqrt(2))/(4*self.kf*self.l)),((-sqrt(2))/(4*self.kf*self.l)),(-1/(4*self.kf*self.km))],     
+            [1/(4*self.kf),((-sqrt(2))/(4*self.kf*self.l)),((sqrt(2))/(4*self.kf*self.l)),(1/(4*self.kf*self.km))],
+            [1/(4*self.kf),((sqrt(2))/(4*self.kf*self.l)),((sqrt(2))/(4*self.kf*self.l)),(-1/(4*self.kf*self.km))],
+            [1/(4*self.kf),((sqrt(2))/(4*self.kf*self.l)),((-sqrt(2))/(4*self.kf*self.l)),(1/(4*self.kf*self.km))]]
+            )
 
+        u_matrix = np.matrix([[self.u1], [self.u2], [self.u3], [self.u4]])
+        print("u_matrix",u_matrix)
+        angular_velocity_matrix = np.matmul(allocation_matrix, u_matrix)
+        print("allocation_matrix",allocation_matrix)
+        print("u_matrix",u_matrix)
+        print("angular_velocity_matrix",angular_velocity_matrix)
+        self.w1 = sqrt(angular_velocity_matrix[0])
+        self.w2 = sqrt(angular_velocity_matrix[1])
+        self.w3 = sqrt(angular_velocity_matrix[2])
+        self.w4 = sqrt(angular_velocity_matrix[3])
+        self.ohm = self.w1 - self.w2 + self.w3 - self.w4
+
+        # TODO: Writing the F_x and F_y to calculate theta_d and phi_d
+        if self.u1 == 0:
+            theta_d = 0
+            phi_d = 0
+            psi_d = 0
+        
+        else:
+        
+            force_x = self.m * \
+                ((-self.kpx*(xyz[0] - posd[0])) +
+                (-self.kdx*(xyz_dot[0] - veld[0])) + accd[0])
+
+            force_y = self.m * \
+                ((-self.kpy*(xyz[1] - posd[1])) +
+                (-self.kdy*(xyz_dot[1] - veld[1])) + accd[1])
+
+            theta_d = np.arcsin(force_x/self.u1)
+            phi_d = np.arcsin(-force_y/self.u1)
+
+            
+
+        
         # !: maintain the rotor velocities within the valid range of [0 to 2618]
         # publish the motor velocities to the associated ROS topic
 

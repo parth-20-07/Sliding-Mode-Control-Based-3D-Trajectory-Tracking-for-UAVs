@@ -1,2 +1,2 @@
 CrazyS/rotors_simulator
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/.private/rotors_simulator/cmake.lock /home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/./cmake.lock
+/home/prar/Sliding_mode_controller_for_quadrotor/devel/.private/rotors_simulator/cmake.lock /home/prar/Sliding_mode_controller_for_quadrotor/devel/./cmake.lock
