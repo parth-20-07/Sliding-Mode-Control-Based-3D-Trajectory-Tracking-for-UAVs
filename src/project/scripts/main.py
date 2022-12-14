@@ -59,21 +59,19 @@ class Quadrotor():
 
         self.ohm = 0
         #!: Tune the Kp and Kd Values here
-        self.kpx = 2
-        self.kdx = 3
-        self.kpy = 2
-        self.kdy = 3
+        self.kp = 10
+        self.kd = 5
 
         #!: Tune the lambda values
-        self.lamda1 = 10
-        self.lamda2 = 0
-        self.lamda3 = 0
-        self.lamda4 = 0
+        self.lamda1 = 100
+        self.lamda2 = 10
+        self.lamda3 = self.lamda2
+        self.lamda4 = 10
 
-        self.k1 = 1  # 20
-        self.k2 = 0  # 35
-        self.k3 = 0  # 50
-        self.k4 = 0  # 45
+        self.k1 = 0.5  # 20
+        self.k2 = 0.5  # 35
+        self.k3 = 10  # 50
+        self.k4 = 1  # 45
 
         self.theta_d = 0
         self.phi_d = 0
@@ -98,16 +96,16 @@ class Quadrotor():
             acc1 = np.array([0, 0, 0.4800*t - 0.2880 *
                              t**2 + 0.0384*t**3])
             return pos1, vel1, acc1
-        # elif (self.t < 20):
-        #     t = self.t - 5
-        #     print("traj2")
-        #     pos2 = np.array([0.0030*t**3 - 0.00029630*t **
-        #                      4 + 0.0000079012*t**5, 0, 1])
-        #     vel2 = np.array([0, 0, 0.0800 * t ** 3 - 0.0240 *
-        #                      t ** 4 + 0.0019 * t ** 5])
-        #     acc2 = np.array([0.0178*t - 0.0036*t **
-        #                      2 + 0.00015802*t**3, 0, 0])
-        #     return pos2, vel2, acc2
+        elif (self.t < 20):
+            t = self.t - 5
+            print("traj2")
+            pos2 = np.array([0.0030*t**3 - 0.00029630*t **
+                             4 + 0.0000079012*t**5, 0, 1])
+            vel2 = np.array([0, 0, 0.0800 * t ** 3 - 0.0240 *
+                             t ** 4 + 0.0019 * t ** 5])
+            acc2 = np.array([0.0178*t - 0.0036*t **
+                             2 + 0.00015802*t**3, 0, 0])
+            return pos2, vel2, acc2
         # elif (self.t < 35):
         #     t = self.t - 20
         #     print("traj3")
@@ -139,7 +137,7 @@ class Quadrotor():
         #                      2 - 0.00015802 * t ** 3, 0])
         #     return pos5, vel5, acc5
         else:
-            return [0, 0, 1], [0, 0, 0], [0, 0, 0]
+            return [1, 0, 1], [0, 0, 0], [0, 0, 0]
 
     def saturation(self, sliding_function):
         sat = 1
@@ -159,6 +157,15 @@ class Quadrotor():
         return angle
 
     def smc_control(self, xyz, xyz_dot, rpy, rpy_dot):
+        for i in range(3):
+            if (np.isnan(xyz[i])):
+                xyz[i] = 0
+            if (np.isnan(xyz_dot[i])):
+                xyz_dot[i] = 0
+            if (np.isnan(rpy[i])):
+                rpy[i] = 0
+            if (np.isnan(rpy_dot[i])):
+                rpy_dot[i] = 0
         pos_x = xyz[0]
         pos_y = xyz[1]
         pos_z = xyz[2]
@@ -201,15 +208,19 @@ class Quadrotor():
         x_error_dot = np.round(vel_x - vel_x_des, 5)
         y_error = np.round(pos_y - pos_y_des, 5)
         y_error_dot = np.round(vel_y - vel_y_des, 5)
-        force_x = self.m * ((-self.kpx*x_error) +
-                            (-self.kdx*x_error_dot) + acc_x_des)
-        force_y = self.m * ((-self.kpy*y_error) +
-                            (-self.kdy*y_error_dot) + acc_y_des)
+        force_x = self.m * ((-self.kp*x_error) +
+                            (-self.kd*x_error_dot) + acc_x_des)
+        force_y = self.m * ((-self.kp*y_error) +
+                            (-self.kd*y_error_dot) + acc_y_des)
         sin_theta_des = force_x/u1
         sin_phi_des = -force_y/u1
         print(f"Des: theta_des:{sin_theta_des} | phi_des:{sin_phi_des}")
         theta_des = self.wrap_to_pi(np.arcsin(sin_theta_des))
         phi_des = self.wrap_to_pi(np.arcsin(sin_phi_des))
+        if (np.isnan(theta_des)):
+            theta_des = 0
+        if (np.isnan(phi_des)):
+            phi_des = 0
 
         s2_error_dot = np.round(dphi, 5)
         s2_error = np.round(phi - phi_des, 5)
@@ -242,10 +253,31 @@ class Quadrotor():
         aa = 1/(4*self.kf)
         bb = sqrt(2)/(4*self.kf*self.l)
         cc = 1/(4*self.km*self.kf)
-        w1 = round(sqrt((aa*u1)-(bb*u2)-(bb*u3)-(cc*u4)))
-        w2 = round(sqrt((aa*u1)-(bb*u2)+(bb*u3)+(cc*u4)))
-        w3 = round(sqrt((aa*u1)+(bb*u2)+(bb*u3)-(cc*u4)))
-        w4 = round(sqrt((aa*u1)+(bb*u2)-(bb*u3)+(cc*u4)))
+        w1_square = (aa*u1)-(bb*u2)-(bb*u3)-(cc*u4)
+        w2_square = (aa*u1)-(bb*u2)+(bb*u3)+(cc*u4)
+        w3_square = (aa*u1)+(bb*u2)+(bb*u3)-(cc*u4)
+        w4_square = (aa*u1)+(bb*u2)-(bb*u3)+(cc*u4)
+
+        if (w1_square < 0):
+            w1 = 0
+        else:
+            w1 = round(sqrt(w1_square))
+
+        if (w2_square < 0):
+            w2 = 0
+        else:
+            w2 = round(sqrt(w2_square))
+
+        if (w3_square < 0):
+            w3 = 0
+        else:
+            w3 = round(sqrt(w3_square))
+
+        if (w4_square < 0):
+            w4 = 0
+        else:
+            w4 = round(sqrt(w4_square))
+
         self.motor_vel = [w1, w2, w3, w4]
         self.ohm = w1-w2+w3-w4
 
@@ -314,16 +346,16 @@ class Quadrotor():
     def save_data(self):
         os.system("")
         # TODO: update the path below with the correct path. Bring Relative Path
-        # with open("log.pkl", "wb") as fp:
-        #     self.mutex_lock_on = True
-        #     pickle.dump([self.t_series, self.x_series,
-        #                  self.y_series, self.z_series, self.traj_x_series, self.traj_y_series, self.traj_z_series], fp)
+        with open("log.pkl", "wb") as fp:
+            self.mutex_lock_on = True
+            pickle.dump([self.t_series, self.x_series,
+                         self.y_series, self.z_series, self.traj_x_series, self.traj_y_series, self.traj_z_series], fp)
         # with open("omega_log.pkl", "wb") as fp:
         #     self.mutex_lock_on = True
         #     pickle.dump([self.t_series, self.w1_series,
         #                 self.w2_series, self.w3_series, self.w4_series], fp)
-        # print("Visualizing System Plot")
-        # os.system("python3 visualize.py")
+        print("Visualizing System Plot")
+        os.system("python3 visualize.py")
         # os.system("python3 visualize_omega.py")
 
 
