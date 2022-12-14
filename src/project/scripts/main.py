@@ -59,19 +59,19 @@ class Quadrotor():
 
         self.ohm = 0
         #!: Tune the Kp and Kd Values here
-        self.kp = 10
-        self.kd = 5
+        self.kp = 0.3
+        self.kd = 0.2
 
         #!: Tune the lambda values
-        self.lamda1 = 100
-        self.lamda2 = 10
-        self.lamda3 = self.lamda2
-        self.lamda4 = 10
+        self.lamda1 = 4
+        self.lamda2 = 4
+        self.lamda3 = 4
+        self.lamda4 = 1
 
-        self.k1 = 0.5  # 20
-        self.k2 = 0.5  # 35
-        self.k3 = 10  # 50
-        self.k4 = 1  # 45
+        self.k1 = 20
+        self.k2 = 35
+        self.k3 = 50
+        self.k4 = 45
 
         self.theta_d = 0
         self.phi_d = 0
@@ -106,36 +106,36 @@ class Quadrotor():
             acc2 = np.array([0.0178*t - 0.0036*t **
                              2 + 0.00015802*t**3, 0, 0])
             return pos2, vel2, acc2
-        # elif (self.t < 35):
-        #     t = self.t - 20
-        #     print("traj3")
-        #     pos3 = np.array([1, 0.0030 * t ** 3 - 0.00029630 *
-        #                      t ** 4 + 0.0000079012 * t ** 5, 1])
-        #     vel3 = np.array([0, 0.0089*t**2 - 0.0012 *
-        #                      t**3 + 0.000039506*t**4, 0])
-        #     acc3 = np.array([0, 0.0178 * t - 0.0036 * t **
-        #                      2 + 0.00015802 * t ** 3, 0])
-        #     return pos3, vel3, acc3
-        # elif (self.t < 50):
-        #     t = self.t - 35
-        #     print("traj4")
-        #     pos4 = np.array([0, 0.0178*t - 0.0036*t **
-        #                      2 + 0.00015802*t**3, 0])
-        #     vel4 = np.array([- 0.0089*t**2 + 0.0012*t **
-        #                      3 - 0.000039506*t**4, 0, 0])
-        #     acc4 = np.array([- 0.0178*t + 0.0036*t **
-        #                      2 - 0.00015802*t**3, 0, 0])
-        #     return pos4, vel4, acc4
-        # elif (self.t < 65):
-        #     t = self.t - 50
-        #     print("traj5")
-        #     pos5 = np.array([0, 1 - 0.0030*t**3 + 0.00029630 *
-        #                      t**4 - 0.0000079012*t**5, 1])
-        #     vel5 = np.array([0, - 0.0089*t**2 + 0.0012 *
-        #                      t**3 - 0.000039506*t**4, 0])
-        #     acc5 = np.array([0, - 0.0178 * t + 0.0036 * t **
-        #                      2 - 0.00015802 * t ** 3, 0])
-        #     return pos5, vel5, acc5
+        elif (self.t < 35):
+            t = self.t - 20
+            print("traj3")
+            pos3 = np.array([1, 0.0030 * t ** 3 - 0.00029630 *
+                             t ** 4 + 0.0000079012 * t ** 5, 1])
+            vel3 = np.array([0, 0.0089*t**2 - 0.0012 *
+                             t**3 + 0.000039506*t**4, 0])
+            acc3 = np.array([0, 0.0178 * t - 0.0036 * t **
+                             2 + 0.00015802 * t ** 3, 0])
+            return pos3, vel3, acc3
+        elif (self.t < 50):
+            t = self.t - 35
+            print("traj4")
+            pos4 = np.array([0, 0.0178*t - 0.0036*t **
+                             2 + 0.00015802*t**3, 0])
+            vel4 = np.array([- 0.0089*t**2 + 0.0012*t **
+                             3 - 0.000039506*t**4, 0, 0])
+            acc4 = np.array([- 0.0178*t + 0.0036*t **
+                             2 - 0.00015802*t**3, 0, 0])
+            return pos4, vel4, acc4
+        elif (self.t < 65):
+            t = self.t - 50
+            print("traj5")
+            pos5 = np.array([0, 1 - 0.0030*t**3 + 0.00029630 *
+                             t**4 - 0.0000079012*t**5, 1])
+            vel5 = np.array([0, - 0.0089*t**2 + 0.0012 *
+                             t**3 - 0.000039506*t**4, 0])
+            acc5 = np.array([0, - 0.0178 * t + 0.0036 * t **
+                             2 - 0.00015802 * t ** 3, 0])
+            return pos5, vel5, acc5
         else:
             return [1, 0, 1], [0, 0, 0], [0, 0, 0]
 
@@ -214,7 +214,7 @@ class Quadrotor():
                             (-self.kd*y_error_dot) + acc_y_des)
         sin_theta_des = force_x/u1
         sin_phi_des = -force_y/u1
-        print(f"Des: theta_des:{sin_theta_des} | phi_des:{sin_phi_des}")
+        # print(f"Des: theta_des:{sin_theta_des} | phi_des:{sin_phi_des}")
         theta_des = self.wrap_to_pi(np.arcsin(sin_theta_des))
         phi_des = self.wrap_to_pi(np.arcsin(sin_phi_des))
         if (np.isnan(theta_des)):
@@ -231,7 +231,7 @@ class Quadrotor():
         s3_error_dot = np.round(dtheta, 5)
         s3_error = np.round(theta-theta_des, 5)
         s3 = (s3_error_dot) + self.lamda1*(s3_error)
-        u3 = -((dphi*dpsi*(self.Iy-self.Ix))+(self.Ip*self.ohm*dphi) +
+        u3 = -((dphi*dpsi*(self.Iz-self.Ix))+(self.Ip*self.ohm*dphi) +
                (self.Iy*self.lamda3*s3_error_dot)+(self.Iy*self.k3*self.saturation(s3)))
 
         s4_error_dot = np.round(dpsi, 5)
@@ -246,8 +246,9 @@ class Quadrotor():
         u4 = np.round(u4, 4)
 
         print(
-            f"Error: t: {self.t} | z:{s1_error[0]} | y:{y_error[0]} | phi:{s2_error[0]} | x: {x_error[0]} | theta: {s3_error[0]} | psi:{s4_error[0]}")
-        print(f"U: {u1} | {u2} | {u3} | {u4}")
+            f"Error: z:{s1_error[0]} | y:{y_error[0]} | phi:{s2_error[0]} | x: {x_error[0]} | theta: {s3_error[0]} | psi:{s4_error[0]}")
+        # t: {self.t} |
+        # print(f"U: {u1} | {u2} | {u3} | {u4}")
 
         # TODO: convert the desired control inputs "u" to desired rotor velocities "self.motor_vel" by using the "allocation matrix"
         aa = 1/(4*self.kf)
@@ -285,8 +286,8 @@ class Quadrotor():
         for i in range(4):
             if (self.motor_vel[i] > self.w_max):
                 self.motor_vel[i] = self.w_max
-        print(
-            f"w1: {self.motor_vel[0]} | w2: {self.motor_vel[1]} | w3: {self.motor_vel[2]} | w4: {self.motor_vel[3]}")
+        # print(
+            # f"w1: {self.motor_vel[0]} | w2: {self.motor_vel[1]} | w3: {self.motor_vel[2]} | w4: {self.motor_vel[3]}")
         # publish the motor velocities to the associated ROS topic
 
         motor_speed = Actuators()
@@ -345,17 +346,17 @@ class Quadrotor():
     # save the actual trajectory data
     def save_data(self):
         os.system("")
-        # TODO: update the path below with the correct path. Bring Relative Path
-        with open("log.pkl", "wb") as fp:
-            self.mutex_lock_on = True
-            pickle.dump([self.t_series, self.x_series,
-                         self.y_series, self.z_series, self.traj_x_series, self.traj_y_series, self.traj_z_series], fp)
+        # # TODO: update the path below with the correct path. Bring Relative Path
+        # with open("log.pkl", "wb") as fp:
+        #     self.mutex_lock_on = True
+        #     pickle.dump([self.t_series, self.x_series,
+        #                  self.y_series, self.z_series, self.traj_x_series, self.traj_y_series, self.traj_z_series], fp)
         # with open("omega_log.pkl", "wb") as fp:
         #     self.mutex_lock_on = True
         #     pickle.dump([self.t_series, self.w1_series,
         #                 self.w2_series, self.w3_series, self.w4_series], fp)
         print("Visualizing System Plot")
-        os.system("python3 visualize.py")
+        # os.system("python3 visualize.py")
         # os.system("python3 visualize_omega.py")
 
 
