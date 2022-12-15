@@ -715,7 +715,7 @@ $$
 where, $\dot{e} = \dot{z} - \dot{z_{d}}$ and ${e} = {z} - z_{d}$
 
 $$
-\begin{equation}
+\begin{equation} \label{eq:1}
 \dot{s_{1}} = \ddot{e} + \lambda_{z}\dot{e}
 \end{equation}
 $$
@@ -725,12 +725,12 @@ where, $\ddot{e} = \ddot{z} - \ddot{z_{d}}$ and $\dot{e} = \dot{z} - \dot{z_{d}}
 Replacing
 
 $$
-\begin{equation}
+\begin{equation} \label{eq:2}
 \ddot{z} = \frac{1}{m}(cos\phi cos\theta)u_{1}-g
 \end{equation}
 $$
 
-Placing $(2)$ in $(1)$ and calculating $s_{1}\dot{s_{1}}$:
+Placing $\ref{eq:1}$ in $\ref{eq:2}$ and calculating $s_{1}\dot{s_{1}}$:
 
 $$
 \begin{equation}
