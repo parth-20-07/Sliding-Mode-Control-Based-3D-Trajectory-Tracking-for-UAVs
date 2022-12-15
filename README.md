@@ -499,6 +499,7 @@ a_{5d}(t) =
 **Solution:** Four sliding mode controller will be needed to control the drone. $s_{1}, s_{2}, s_{3}, s_{4}$ will control $u_{1}, u_{2}, u_{3}, u_{4}$ respectively, which in turn will control  $z, \phi, \theta$, and $\psi$ respectively.
 
 Designing Controller 1 to control $z$:
+
 $$
 \begin{equation}
 s_{1} = \dot{e} + \lambda_{1}e\notag
@@ -553,7 +554,7 @@ Placing equation $(8)$ in equation $(7)$ will result in:
 
 $$
 \begin{equation}
-s_{1}\dot{s_{1}} = -s_{1}u_{r}
+s_{1}\dot{s_{1}} = -s_{1}u_{r}\notag
 \end{equation}
 $$
 
@@ -561,7 +562,7 @@ We are designing the controller with reduced chattering, so we shall be adding a
 
 $$
 \begin{equation}
-s_{1}\dot{s_{1}} = -s_{1} K_1 sat(s_1)
+s_{1}\dot{s_{1}} = -s_{1} K_1 sat(s_1)\notag
 \end{equation}
 $$
 
@@ -569,7 +570,83 @@ for $K_1 > 0$, the resulting system is always negative, thus asymptotically stab
 
 ```math
 \begin{equation}
-u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{1}(\dot{z}-v_{z1d}) + K_1 sat(s_1))
+u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{1}(\dot{z}-v_{z1d}) + K_1 sat(s_1))\notag
+\end{equation}
+```
+
+Designing Controller 2 to control $\phi$:
+
+$$
+\begin{equation}
+s_{2} = \dot{e} + \lambda_{1}e\notag
+\end{equation}
+$$
+
+where, $\dot{e} = \dot{\phi} - \dot{\phi_{d}}$ and ${e} = {\phi} - \phi_{d}$
+
+$$
+\begin{equation}
+\dot{s_{2}} = \ddot{e} + \lambda_{2}\dot{e}\notag
+\end{equation}
+$$
+
+where, $\ddot{e} = \ddot{\phi} - \ddot{\phi_{d}}$ and $\dot{e} = \dot{\phi} - \dot{phi_{d}}$
+
+Replacing
+
+$$
+\begin{equation}
+\ddot{\phi} =\dot{\theta}\dot{\psi}\frac{I_{y}-I_{z}}{I_{x}}-\frac{I_{p}}{I_{x}}\Omega \dot{\theta}+\frac{1}{I_{x}}u_{2}\\
+\end{equation}
+$$
+
+Calculating $s_{2}\dot{s_{2}}$:
+
+$$
+\begin{equation}
+s_{2}\dot{s_{2}} = s_{2}(\dot{\theta}\dot{\psi}\frac{I_{y}-I_{z}}{I_{x}}-\frac{I_{p}}{I_{x}}\Omega \dot{\theta}+\frac{1}{I_{x}}u_{2} - \ddot{\phi_{d}} + \lambda_{2}(\dot{\phi}-\dot{\phi_{d}}))\notag
+\end{equation}
+$$
+
+Making the coefficient of $u_{2}$ as 1 will result in:
+
+$$
+\begin{equation}
+s_{2}\dot{s_{2}} = \frac{s_{2}}{I_{x}}((\dot{\theta}\dot{\psi}(I_{y}-I_{z})-I_{p}\Omega \dot{\theta} - \ddot{\phi_{d}} + \lambda_{2}(\dot{\phi}-\dot{\phi_{d}})) + u_{2})
+\end{equation}
+$$
+
+The control strategy we came up to is to design a controller which cancels the system dynamics:
+
+$$
+\begin{equation}
+u_{2} = -((\dot{\theta}\dot{\psi}(I_{y}-I_{z})-I_{p}\Omega \dot{\theta} - \ddot{\phi_{d}} + \lambda_{2}(\dot{\phi}-\dot{\phi_{d}})) + u_{r})
+\end{equation}
+$$
+
+where, $u_{r}$ is the robust term.
+
+Placing equation $(11)$ in equation $(10)$ will result in:
+
+$$
+\begin{equation}
+s_{2}\dot{s_{2}} = -s_{2}u_{r}
+\end{equation}
+$$
+
+We are designing the controller with reduced chattering, so we shall be adding a boundary layer of $\gamma$ which is the acceptable tolerance. Thus, assume $u_{r} = K_1 sat(s_2)$. Therefore;
+
+$$
+\begin{equation}
+s_{2}\dot{s_{2}} = -s_{2} K_2 sat(s_2)
+\end{equation}
+$$
+
+for $K_1 > 0$, the resulting system is always negative, thus asymptotically stable. Thus,
+
+```math
+\begin{equation}
+u_{2} = -((\dot{\theta}\dot{\psi}(I_{y}-I_{z})-I_{p}\Omega \dot{\theta} - \ddot{\phi_{d}} + \lambda_{2}(\dot{\phi}-\dot{\phi_{d}})) + K_2 sat(s_2))
 \end{equation}
 ```
 
