@@ -14,7 +14,12 @@
         - [Designing Controller 2 to control phi](#designing-controller-2-to-control-phi)
         - [Designing Controller 3 to control theta](#designing-controller-3-to-control-theta)
         - [Designing Controller 4 to control psi](#designing-controller-4-to-control-psi)
-- [What each scripts contain?](#what-each-scripts-contain)
+    - [Part 3: Programming the Controllers](#part-3-programming-the-controllers)
+        - [Controller 1](#controller-1)
+        - [Controller 2](#controller-2)
+        - [Controller 3](#controller-3)
+        - [Controller 4](#controller-4)
+        - [Saturation Function](#saturation-function)
 - [Packages used](#packages-used)
 - [Designer Details](#designer-details)
 - [Acknowledgements](#acknowledgements)
@@ -152,7 +157,7 @@ The physical parameters for the Crazyflie 2.0 hardware are listed below
 |Rotor maximum speed|$\omega_{max}$|$2618\ rad/s$|
 |Rotor minimum speed|$\omega_{min}$|$0\ rad/s$|
 
-Remark 1: As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles.
+_Remark 1:_ As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles.
 
 # Setup the environment
 
@@ -1051,7 +1056,176 @@ u_{4} = -(\dot{\phi}\dot{\theta}(I_{x}-I_{y})-I_{z}\ddot{\psi_{d}} + I_{z}\lambd
 \end{equation}
 $$
 
-# What each scripts contain?
+## Part 3: Programming the Controllers
+
+Implement a ROS node in Python or MATLAB to evaluate the performance of the
+control design on the Crazyflie 2.0 quadrotor in Gazebo. You can create a new ROS package named `project` under the project workspace for this purpose. The script must implement the trajectories generated in Part 1 and the sliding mode control laws formulated in Part 2.
+
+**Solution:**
+
+### Controller 1
+
+Controller 1 is implemented as follows
+```
+s1_error_dot = vel_z-zd_dot
+s1_error = pos_z-zd
+s1 = (s1_error_dot) + self.lamda_z*(s1_error)
+
+u1 = self.m * (self.g + zd_ddot - (self.lamda_z*s1_error_dot) -
+                (self.k_z*self.saturation(s1)))/(cos(theta)*cos(phi))
+```
+
+First, calculate the $e$ and $\dot{e}$ which is later used to calculate $s$:
+
+```
+s1_error_dot = vel_z-zd_dot
+s1_error = pos_z-zd
+s1 = (s1_error_dot) + self.lamda_z*(s1_error)
+```
+
+Then, the controller is implemented as explained in $(A)$.
+
+```
+u1 = self.m * (self.g + zd_ddot - (self.lamda_z*s1_error_dot) -
+                (self.k_z*self.saturation(s1)))/(cos(theta)*cos(phi))
+```
+
+### Controller 2
+
+Controller 2 is implemented as follows
+
+```
+y_error = pos_y - yd
+y_error_dot = vel_y - yd_dot
+force_y = self.m * ((-self.kp*y_error) +
+                    (-self.kd*y_error_dot) + yd_ddot)
+sin_phi_des = -force_y/u1
+phi_des = asin(sin_phi_des)
+
+s2_error_dot = dphi
+s2_error = self.wrap_to_pi(phi - phi_des)
+s2 = (s2_error_dot) + self.lamda_phi*(s2_error)
+
+u2 = - ((dtheta*dpsi*(self.Iy-self.Iz))-(self.Ip*self.ohm*dtheta)
+        + (self.lamda_phi*self.Ix*s2_error_dot)+(self.Ix*self.k_phi*self.saturation(s2)))
+```
+
+The drone moves in $y$ direction by tilting in the $y$ direction. This is called _roll_ motion in the drone and the desired $\phi_{d}$ is calculated as shown below
+
+```
+y_error = pos_y - yd
+y_error_dot = vel_y - yd_dot
+force_y = self.m * ((-self.kp*y_error) +
+                    (-self.kd*y_error_dot) + yd_ddot)
+sin_phi_des = -force_y/u1
+phi_des = asin(sin_phi_des)
+```
+
+Now, calculate the $e$ and $\dot{e}$ which is later used to calculate $s$. The $\dot{\phi_{d}} = 0$ and $\ddot{\phi_{d}} = 0$.
+
+```
+s2_error_dot = dphi
+s2_error = self.wrap_to_pi(phi - phi_des)
+s2 = (s2_error_dot) + self.lamda_phi*(s2_error)
+```
+
+The force needed to _roll_ is applied by controller 2 which is implemented as follows and explained in $(C)$.
+
+```
+u2 = - ((dtheta*dpsi*(self.Iy-self.Iz))-(self.Ip*self.ohm*dtheta)
+        + (self.lamda_phi*self.Ix*s2_error_dot)+(self.Ix*self.k_phi*self.saturation(s2)))
+```
+
+### Controller 3
+
+Controller 3 is implemented as follows
+
+```
+x_error = pos_x - xd
+x_error_dot = vel_x - xd_dot
+force_x = self.m * ((-self.kp*x_error) +
+                    (-self.kd*x_error_dot) + xd_ddot)
+sin_theta_des = force_x/u1
+theta_des = asin(sin_theta_des)
+
+s3_error_dot = dtheta
+s3_error = self.wrap_to_pi(theta-theta_des)
+s3 = (s3_error_dot) + self.lamda_z*(s3_error)
+
+u3 = -((dphi*dpsi*(self.Iz-self.Ix))+(self.Ip*self.ohm*dphi)
+        + (self.Iy*self.lamda_theta*s3_error_dot)+(self.Iy*self.k_theta*self.saturation(s3)))
+```
+
+The drone moves in $x$ direction by tilting in the $x$ direction. This is called _pitch_ motion in the drone and the desired $\theta_{d}$ is calculated as shown below
+
+```
+x_error = pos_x - xd
+x_error_dot = vel_x - xd_dot
+force_x = self.m * ((-self.kp*x_error) +
+                    (-self.kd*x_error_dot) + xd_ddot)
+sin_theta_des = force_x/u1
+theta_des = asin(sin_theta_des)
+```
+
+Now, calculate the $e$ and $\dot{e}$ which is later used to calculate $s$. The $\dot{\theta_{d}} = 0$ and $\ddot{\theta_{d}} = 0$.
+
+```
+s3_error_dot = dtheta
+s3_error = self.wrap_to_pi(theta-theta_des)
+s3 = (s3_error_dot) + self.lamda_z*(s3_error)
+```
+
+The force needed to _pitch_ is applied by controller 3 which is implemented as follows and explained in $(C)$.
+
+```
+u3 = -((dphi*dpsi*(self.Iz-self.Ix))+(self.Ip*self.ohm*dphi)
+        + (self.Iy*self.lamda_theta*s3_error_dot)+(self.Iy*self.k_theta*self.saturation(s3)))
+```
+
+### Controller 4
+
+Controller 4 is implemented as follows
+
+```
+s4_error_dot = dpsi
+s4_error = self.wrap_to_pi(psi)
+s4 = (s4_error_dot) + self.lamda_z*(s4_error)
+
+u4 = -((dphi*dtheta*(self.Ix-self.Iy)) +
+        (self.lamda_psi * self.Iz*s4_error_dot)+(self.Iz*self.k_psi*self.saturation(s4)))
+```
+
+The drone rotates about its $z$ axis by the motion called as _yaw_. The _yaw_ motion is executed as shown
+
+First, calculate the $e$ and $\dot{e}$ which is later used to calculate $s$. The $\psi = 0$, $\dot{\psi_{d}} = 0$ and $\ddot{\psi_{d}} = 0$.
+
+```
+s4_error_dot = dpsi
+s4_error = self.wrap_to_pi(psi)
+s4 = (s4_error_dot) + self.lamda_z*(s4_error)
+```
+
+The force needed to _yaw_ is applied by controller 4 which is implemented as follows and explained in $(D)$.
+
+```
+u4 = -((dphi*dtheta*(self.Ix-self.Iy)) +
+        (self.lamda_psi * self.Iz*s4_error_dot)+(self.Iz*self.k_psi*self.saturation(s4)))
+```
+
+### Saturation Function
+
+The Saturation function is used to reduce the chattering on the controller. The saturation function is defined as follows:
+
+```
+def saturation(self, sliding_function):
+    sat = min(max(sliding_function/self.tol, -1), 1)
+    return sat
+```
+
+The saturation function works as follows for acceptable error $(\gamma)$ defined by `self.tol`:
+- When $s > \gamma$, saturation function returns 1
+- When $-\gamma < s < \gamma$, saturation function returns $\frac{s}{\gamma}$
+- When $s < -\gamma$, saturation function returns -1
 
 # Packages used
 - [Symbolic Python (sympy)](https://github.com/sympy/sympy)
