@@ -575,7 +575,7 @@ u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{1}(\dot{z}-v_
 
 where, 
 
-$$
+```math
 \begin{equation}
 sat(s_{1}) =  \{\begin{aligned}
                 \mathbf 1 && \forall && s_{1}>\gamma\\
@@ -584,7 +584,7 @@ sat(s_{1}) =  \{\begin{aligned}
                \end{aligned}
 \notag
 \end{equation}
-$$
+```
 
 
 where, $\gamma$ is the acceptable error tolerance.
