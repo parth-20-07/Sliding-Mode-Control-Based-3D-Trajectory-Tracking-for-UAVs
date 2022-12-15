@@ -577,11 +577,11 @@ where,
 
 $$
 \begin{equation}
-sat(s_{1}) =  \left\{\begin{aligned}
+sat(s_{1}) =  \{\begin{aligned}
                 \mathbf 1 && \forall && s_{1}>\gamma\\
                 \frac{s_{1}}{\gamma}  && \forall && -\gamma<s_{1}<\gamma\\
                 -1 && \forall && s_{1}<-\gamma\\
-               \end{aligned}\right.
+               \end{aligned}
 \notag
 \end{equation}
 $$
