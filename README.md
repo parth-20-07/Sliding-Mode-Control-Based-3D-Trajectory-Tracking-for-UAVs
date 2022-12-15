@@ -60,6 +60,8 @@ For a set of desired control inputs, the desired rotor speeds (i.e. $\omega_{i}$
 where $k_{F}$ and $k_{M}$ denote the propeller thrust factor and moment factor, respectively.
 
 Considering the generalized coordinates and the control inputs defined above, the simplified equations of motion (assuming small angles) for the translational  accelerations and body frame angular accelerations are derived as:
+
+
 $$
 \begin{equation}
 \ddot{x} = \frac{1}{m}(cos\phi sin\theta cos\psi\  + \ sin\phi sin\psi)u_{1}
