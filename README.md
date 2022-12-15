@@ -10,6 +10,10 @@
 - [Problem Statement](#problem-statement)
     - [Part 1: Trajectory Generation](#part-1-trajectory-generation)
     - [Part 2: Controller Design](#part-2-controller-design)
+        - [Designing Controller 1 to control $z$](#designing-controller-1-to-control-z)
+        - [Designing Controller 2 to control $\phi$](#designing-controller-2-to-control-%5Cphi)
+        - [Designing Controller 3 to control $\theta$](#designing-controller-3-to-control-%5Ctheta)
+        - [Designing Controller 4 to control $\psi$](#designing-controller-4-to-control-%5Cpsi)
 - [What each scripts contain?](#what-each-scripts-contain)
 - [Packages used](#packages-used)
 - [Designer Details](#designer-details)
@@ -704,7 +708,7 @@ Considering the equations of motion provided above, design boundary layer-based 
 
 **Solution:** Four sliding mode controller will be needed to control the drone. $s_{1}, s_{2}, s_{3}, s_{4}$ will control $u_{1}, u_{2}, u_{3}, u_{4}$ respectively, which in turn will control  $z, \phi, \theta$, and $\psi$ respectively.
 
-**Designing Controller 1 to control $z$:**
+### Designing Controller 1 to control $z$
 
 $$
 \begin{equation}
@@ -782,7 +786,7 @@ $$
 
 
 
-**Designing Controller 2 to control $\phi$:**
+### Designing Controller 2 to control $\phi$
 
 $$
 \begin{equation}
@@ -858,7 +862,7 @@ u_{2} = -(\dot{\theta}\dot{\psi}(I_{y}-I_{z})-I_{p}\Omega \dot{\theta}-I_{x}\ddo
 \end{equation}
 $$
 
-**Designing Controller 3 to control $\theta$:**
+### Designing Controller 3 to control $\theta$
 
 $$
 \begin{equation}
@@ -934,6 +938,81 @@ u_{3} = -(\dot{\phi}\dot{\psi}(I_{z}-I_{x})+I_{p}\Omega \dot{\phi}-I_{y}\ddot{\t
 \end{equation}
 $$
 
+### Designing Controller 4 to control $\psi$
+
+$$
+\begin{equation}
+s_{4} = \dot{e} + \lambda_{\psi}e\notag
+\end{equation}
+$$
+
+where, $\dot{e} = \dot{\psi} - \dot{\psi_{d}}$ and ${e} = {\psi} - \psi_{d}$
+
+$$
+\begin{equation}
+\dot{s_{4}} = \ddot{e} + \lambda_{\psi}\dot{e} \tag{13}
+\end{equation}
+$$
+
+where, $\ddot{e} = \ddot{\psi} - \ddot{\psi_{d}}$ and $\dot{e} = \dot{\psi} - \dot{\psi_{d}}$
+
+Also,
+
+$$
+\begin{equation}
+\ddot{\psi} =\dot{\phi}\dot{\theta}\frac{I_{x}-I_{y}}{I_{z}}+\frac{1}{I_{z}}u_{4}\tag{14}
+\end{equation}
+$$
+
+Placing $(14)$ in $(13)$ and calculating $s_{4}\dot{s_{4}}$:
+
+$$
+\begin{equation}
+s_{4}\dot{s_{4}} = s_{4}(\dot{\phi}\dot{\theta}\frac{I_{x}-I_{y}}{I_{z}}+\frac{1}{I_{z}}u_{4}-\ddot{\psi_{d}} + \lambda_{\psi}(\dot{\psi} - \dot{\psi_{d}}))\notag
+\end{equation}
+$$
+
+Making the coefficient of $u_{4}$ as 1 will result in:
+
+$$
+\begin{equation}
+s_{4}\dot{s_{4}} = \frac{s_{4}}{I_{z}}(u_{4} + (\dot{\phi}\dot{\theta}(I_{x}-I_{y})-I_{z}\ddot{\psi_{d}} + I_{z}\lambda_{\psi}(\dot{\psi} - \dot{\psi_{d}})))\tag{15}
+\end{equation}
+$$
+
+The control strategy we came up to is to design a controller which cancels the system dynamics:
+
+$$
+\begin{equation}
+u_{4} = -(\dot{\phi}\dot{\theta}(I_{x}-I_{y})-I_{z}\ddot{\psi_{d}} + I_{z}\lambda_{\psi}(\dot{\psi} - \dot{\psi_{d}})+ I_{z}u_{r})\tag{16}
+\end{equation}
+$$
+
+where, $u_{r}$ is the robust term.
+
+Placing equation $(16)$ in equation $(15)$ will result in:
+
+$$
+\begin{equation}
+s_{4}\dot{s_{4}} = -s_{4}u_{r}\notag
+\end{equation}
+$$
+
+We are designing the controller with reduced chattering, so we shall be adding a boundary layer of $\gamma$ which is the acceptable tolerance. Thus, assume $u_{r} = K_{\psi} sat(s_4)$. Therefore;
+
+$$
+\begin{equation}
+s_{4}\dot{s_{4}} = -s_{4} K_{\psi} sat(s_4)\notag
+\end{equation}
+$$
+
+for $K_{\psi} > 0$, the resulting system is always negative, thus asymptotically stable. Thus,
+
+$$
+\begin{equation}
+u_{4} = -(\dot{\phi}\dot{\theta}(I_{x}-I_{y})-I_{z}\ddot{\psi_{d}} + I_{z}\lambda_{\psi}(\dot{\psi} - \dot{\psi_{d}})+ I_{z}K_{\psi} sat(s_4))\tag{D}
+\end{equation}
+$$
 
 # What each scripts contain?
 
