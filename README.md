@@ -566,15 +566,16 @@ s_{1}\dot{s_{1}} = -s_{1} K_1 sat(s_1)
 $$
 
 for $K_1 > 0$, the resulting system is always negative, thus stable. Thus,
-$$
+
+```math
 \begin{equation}
 u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{1}(\dot{z}-v_{z1d}) + K_1 sat(s_1))
 \end{equation}
-$$
+```
 
 where, 
 
-$$
+```math
 \begin{equation}
 sat(s_{1}) =  \left\{\begin{aligned}
                 \mathbf1 && \forall && s_{1}>\gamma\\
@@ -582,7 +583,7 @@ sat(s_{1}) =  \left\{\begin{aligned}
                 -1&& \forall && s_{1}<-\gamma
                \end{aligned}\right.
 \end{equation}
-$$
+```
 
 where, $\gamma$ is the acceptable error tolerance.
 
