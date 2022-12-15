@@ -10,10 +10,10 @@
 - [Problem Statement](#problem-statement)
     - [Part 1: Trajectory Generation](#part-1-trajectory-generation)
     - [Part 2: Controller Design](#part-2-controller-design)
-        - [Designing Controller 1 to control $z$](#designing-controller-1-to-control-z)
-        - [Designing Controller 2 to control $\phi$](#designing-controller-2-to-control-%5Cphi)
-        - [Designing Controller 3 to control $\theta$](#designing-controller-3-to-control-%5Ctheta)
-        - [Designing Controller 4 to control $\psi$](#designing-controller-4-to-control-%5Cpsi)
+        - [Designing Controller 1 to control z](#designing-controller-1-to-control-z)
+        - [Designing Controller 2 to control phi](#designing-controller-2-to-control-phi)
+        - [Designing Controller 3 to control theta](#designing-controller-3-to-control-theta)
+        - [Designing Controller 4 to control psi](#designing-controller-4-to-control-psi)
 - [What each scripts contain?](#what-each-scripts-contain)
 - [Packages used](#packages-used)
 - [Designer Details](#designer-details)
@@ -708,7 +708,7 @@ Considering the equations of motion provided above, design boundary layer-based 
 
 **Solution:** Four sliding mode controller will be needed to control the drone. $s_{1}, s_{2}, s_{3}, s_{4}$ will control $u_{1}, u_{2}, u_{3}, u_{4}$ respectively, which in turn will control  $z, \phi, \theta$, and $\psi$ respectively.
 
-### Designing Controller 1 to control $z$
+### Designing Controller 1 to control z
 
 $$
 \begin{equation}
@@ -786,7 +786,7 @@ $$
 
 
 
-### Designing Controller 2 to control $\phi$
+### Designing Controller 2 to control phi
 
 $$
 \begin{equation}
@@ -862,7 +862,7 @@ u_{2} = -(\dot{\theta}\dot{\psi}(I_{y}-I_{z})-I_{p}\Omega \dot{\theta}-I_{x}\ddo
 \end{equation}
 $$
 
-### Designing Controller 3 to control $\theta$
+### Designing Controller 3 to control theta
 
 $$
 \begin{equation}
@@ -938,7 +938,7 @@ u_{3} = -(\dot{\phi}\dot{\psi}(I_{z}-I_{x})+I_{p}\Omega \dot{\phi}-I_{y}\ddot{\t
 \end{equation}
 $$
 
-### Designing Controller 4 to control $\psi$
+### Designing Controller 4 to control psi
 
 $$
 \begin{equation}
