@@ -39,7 +39,6 @@ class Quadrotor():
         self.w4_series = []
         self.mutex_lock_on = False
         rospy.on_shutdown(self.save_data)
-        # TODO: include initialization codes if needed
 
         # defining the physical paramters
         self.m = 27/1000
@@ -164,7 +163,6 @@ class Quadrotor():
         xd, yd, zd, xd_dot, yd_dot, zd_dot, xd_ddot, yd_ddot, zd_ddot = self.traj_evaluate()
         self.posd = [xd, yd, zd]
 
-        # TODO: implement the Sliding Mode Control laws designed in Part 2 to calculate the control inputs "u"
         s1_error_dot = vel_z-zd_dot
         s1_error = pos_z-zd
         s1 = (s1_error_dot) + self.lamda_z*(s1_error)
@@ -172,7 +170,6 @@ class Quadrotor():
         u1 = self.m * (self.g + zd_ddot - (self.lamda_z*s1_error_dot) -
                        (self.k_z*self.saturation(s1)))/(cos(theta)*cos(phi))
 
-        # TODO: Writing the F_x and F_y to calculate theta_d and phi_d
         x_error = pos_x - xd
         x_error_dot = vel_x - xd_dot
         y_error = pos_y - yd
@@ -210,7 +207,6 @@ class Quadrotor():
         # t: {self.t} |
         # print(f"U: {u1} | {u2} | {u3} | {u4}")
 
-        # TODO: convert the desired control inputs "u" to desired rotor velocities "self.motor_vel" by using the "allocation matrix"
         u_mat = np.array([u1, u2, u3, u4])
 
         # Allocation matrix
@@ -288,7 +284,6 @@ class Quadrotor():
     # save the actual trajectory data
     def save_data(self):
         os.system("")
-        # # TODO: update the path below with the correct path. Bring Relative Path
         with open("src/project/scripts/log.pkl", "wb") as fp:
             self.mutex_lock_on = True
             pickle.dump([self.t_series, self.x_series,
