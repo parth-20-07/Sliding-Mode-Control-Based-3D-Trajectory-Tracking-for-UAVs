@@ -25,6 +25,10 @@
         - [Limiting Rotor Velocity](#limiting-rotor-velocity)
         - [Calculating Omega](#calculating-omega)
         - [Publishing the Rotor Values to topic](#publishing-the-rotor-values-to-topic)
+    - [Parth 4: Plotting the system performance](#parth-4-plotting-the-system-performance)
+        - [Saving System Data into Array](#saving-system-data-into-array)
+        - [Performance Visualization](#performance-visualization)
+    - [Part 5: Performance Testing](#part-5-performance-testing)
 - [Packages used](#packages-used)
 - [Designer Details](#designer-details)
 - [Acknowledgements](#acknowledgements)
@@ -1306,6 +1310,115 @@ motor_speed = Actuators()
 motor_speed.angular_velocities = [self.motor_vel[0], self.motor_vel[1], self.motor_vel[2], self.motor_vel[3]]
 self.motor_speed_pub.publish(motor_speed)
 ```
+
+## Parth 4: Plotting the system performance
+
+Once the program is shut down, the actual trajectory and desired trajectory is saved into a `log.pkl` file under the scripts directory. A separate Python script is made to help visualize the trajectory from the saved `log.pkl` file. _Because we are too lazy to call the script every time we try to run the simulation, we have automated that portion and the system performance plot will automatically pop-up when the simulation is finished._
+
+### Saving System Data into Array
+The desired and actual trajectory is saved into arrays to be plotted. This is done in every iteration using:
+
+```
+self.x_series.append(xyz[0, 0])
+self.y_series.append(xyz[1, 0])
+self.z_series.append(xyz[2, 0])
+self.traj_x_series.append(self.posd[0])
+self.traj_y_series.append(self.posd[1])
+self.traj_z_series.append(self.posd[2])
+```
+
+We have a command `rospy.on_shutdown(self.save_data)` while defining the node which tells the ros node to run the `save_data()` function when the ros node shutsdown. The task of this function is to save all the collected data into the _log.pkl_ file. All the arrays created above are dumped into the file using the `pickle` library
+
+```
+with open("src/project/scripts/log.pkl", "wb") as fp:
+    self.mutex_lock_on = True
+    pickle.dump([self.t_series, self.x_series,
+                    self.y_series, self.z_series, self.traj_x_series, self.traj_y_series, self.traj_z_series], fp)
+```
+
+In order to manually run the `visualize.py` file, we use the `os` library to run shell commands directly from the python script as shown.
+
+```
+print("Visualizing System Plot")
+os.system("rosrun project visualize.py")
+```
+
+### Performance Visualization
+
+`visualize.py` has the followng code:
+
+```
+#!/usr/bin/env python3
+import matplotlib.pyplot as plt
+import pickle
+from mpl_toolkits.mplot3d import Axes3D
+
+
+def visualization(x_series, y_series, z_series, traj_x_series, traj_y_series,traj_z_series):
+    # load csv file and plot trajectory
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+
+    # Data for a three-dimensional line
+    ax.plot3D(x_series, y_series, z_series, color='r', label='actual path')
+    ax.plot3D(traj_x_series, traj_y_series, traj_z_series,
+              color='b', label='tajectory path')
+
+    plt.grid(which='both')
+    plt.xlabel('x (m)')
+    plt.ylabel('y (m)')
+    plt.title("Drone Path")
+    plt.savefig('src/project/scripts/trajectory.png', dpi=1200)
+    plt.legend()
+    plt.show()
+
+
+if __name__ == '__main__':
+    file = open("src/project/scripts/log.pkl", 'rb')
+    t_series, x_series, y_series, z_series, traj_x_series, traj_y_series, traj_z_series = pickle.load(
+        file)
+    file.close()
+    visualization(x_series, y_series, z_series,
+                  traj_x_series, traj_y_series, traj_z_series)
+```
+
+First, we search for `log.pkl` file in the directory to extract the time array, actual position arrays and desired positions array.
+
+```
+file = open("src/project/scripts/log.pkl", 'rb')
+t_series, x_series, y_series, z_series, traj_x_series, traj_y_series, traj_z_series = pickle.load(
+    file)
+file.close()
+```
+
+Then, the arrays are passed to the `visualization(x_series, y_series, z_series, traj_x_series, traj_y_series,traj_z_series)` function to plot them. In this function, we define the nature of the plot like plotting in 3D, color of each plot, labels and the saving the generated performance graph.
+
+The actual trajectory is plotted in color `red` and the desired trajectories are plotted in color `blue`.
+
+```
+def visualization(x_series, y_series, z_series, traj_x_series, traj_y_series,traj_z_series):
+    # load csv file and plot trajectory
+    fig = plt.figure()
+    ax = plt.axes(projection='3d')
+
+    # Data for a three-dimensional line
+    ax.plot3D(x_series, y_series, z_series, color='r', label='actual path')
+    ax.plot3D(traj_x_series, traj_y_series, traj_z_series,
+              color='b', label='tajectory path')
+
+    plt.grid(which='both')
+    plt.xlabel('x (m)')
+    plt.ylabel('y (m)')
+    plt.title("Drone Path")
+    plt.savefig('src/project/scripts/trajectory.png', dpi=1200)
+    plt.legend()
+    plt.show()
+```
+
+<!-- ## Part 5: Performance Testing
+The performance of our tuning is as shown below:
+
+![Tuned Performance](/Resources/Photos/trajectory.png) -->
 
 # Packages used
 - [Symbolic Python (sympy)](https://github.com/sympy/sympy)
