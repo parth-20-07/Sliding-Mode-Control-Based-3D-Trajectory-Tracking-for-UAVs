@@ -776,7 +776,7 @@ for $K_1 > 0$, the resulting system is always negative, thus asymptotically stab
 
 $$
 \begin{equation}
-u_{1} = - (\frac{m}{cos\phi cos\theta})(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}}) + K_{z}sat(s_1))\tag{A}
+u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}}) + K_{z}sat(s_1))\tag{A}
 \end{equation}
 $$
 
