@@ -63,7 +63,7 @@ where $u_{1}$ is the force from all the propellers, and $u_{2}$, $u_{3}$, and $u
 
 For a set of desired control inputs, the desired rotor speeds (i.e. $\omega_{i}$ for $i$ = 1, 2, 3, 4) are obtained by using the “allocation matrix”:
 
-$$
+```math
 \begin{bmatrix}
 \omega_{1}^2\\
 \omega_{2}^2\\
@@ -90,7 +90,7 @@ u_{3}\\
 u_{4}\\
 
 \end{bmatrix}
-$$
+```
 
 where $k_{F}$ and $k_{M}$ denote the propeller thrust factor and moment factor, respectively.
 
