@@ -858,6 +858,81 @@ u_{2} = -(\dot{\theta}\dot{\psi}(I_{y}-I_{z})-I_{p}\Omega \dot{\theta}-I_{x}\ddo
 \end{equation}
 $$
 
+**Designing Controller 3 to control $\theta$:**
+
+$$
+\begin{equation}
+s_{3} = \dot{e} + \lambda_{\theta}e\notag
+\end{equation}
+$$
+
+where, $\dot{e} = \dot{\theta} - \dot{\theta_{d}}$ and ${e} = {\theta} - \theta_{d}$
+
+$$
+\begin{equation}
+\dot{s_{3}} = \ddot{e} + \lambda_{\theta}\dot{e} \tag{9}
+\end{equation}
+$$
+
+where, $\ddot{e} = \ddot{\theta} - \ddot{\theta_{d}}$ and $\dot{e} = \dot{\theta} - \dot{\theta_{d}}$
+
+Also,
+
+$$
+\begin{equation}
+\ddot{\theta} =\dot{\phi}\dot{\psi}\frac{I_{z}-I_{x}}{I_{y}}+\frac{I_{p}}{I_{y}}\Omega \dot{\phi}+\frac{1}{I_{y}}u_{3}\tag{10}
+\end{equation}
+$$
+
+Placing $(10)$ in $(9)$ and calculating $s_{3}\dot{s_{3}}$:
+
+$$
+\begin{equation}
+s_{3}\dot{s_{3}} = s_{3}(\dot{\phi}\dot{\psi}\frac{I_{z}-I_{x}}{I_{y}}+\frac{I_{p}}{I_{y}}\Omega \dot{\phi}+\frac{1}{I_{y}}u_{3}-\ddot{\theta_{d}} + \lambda_{\theta}(\dot{\theta} - \dot{\theta_{d}}))\notag
+\end{equation}
+$$
+
+Making the coefficient of $u_{3}$ as 1 will result in:
+
+$$
+\begin{equation}
+s_{3}\dot{s_{3}} = \frac{s_{3}}{I_{y}}(u_{3} + (\dot{\phi}\dot{\psi}(I_{z}-I_{x})+I_{p}\Omega \dot{\phi}-I_{y}\ddot{\theta_{d}} + I_{y}\lambda_{\theta}(\dot{\theta} - \dot{\theta_{d}})))\tag{11}
+\end{equation}
+$$
+
+The control strategy we came up to is to design a controller which cancels the system dynamics:
+
+$$
+\begin{equation}
+u_{3} = -(\dot{\phi}\dot{\psi}(I_{z}-I_{x})+I_{p}\Omega \dot{\phi}-I_{y}\ddot{\theta_{d}} + I_{y}\lambda_{\theta}(\dot{\theta} - \dot{\theta_{d}}) + I_{y}u_{r})\tag{12}
+\end{equation}
+$$
+
+where, $u_{r}$ is the robust term.
+
+Placing equation $(12)$ in equation $(11)$ will result in:
+
+$$
+\begin{equation}
+s_{3}\dot{s_{3}} = -s_{3}u_{r}\notag
+\end{equation}
+$$
+
+We are designing the controller with reduced chattering, so we shall be adding a boundary layer of $\gamma$ which is the acceptable tolerance. Thus, assume $u_{r} = K_{\theta} sat(s_3)$. Therefore;
+
+$$
+\begin{equation}
+s_{3}\dot{s_{3}} = -s_{3} K_{\theta} sat(s_3)\notag
+\end{equation}
+$$
+
+for $K_{\theta} > 0$, the resulting system is always negative, thus asymptotically stable. Thus,
+
+$$
+\begin{equation}
+u_{3} = -(\dot{\phi}\dot{\psi}(I_{z}-I_{x})+I_{p}\Omega \dot{\phi}-I_{y}\ddot{\theta_{d}} + I_{y}\lambda_{\theta}(\dot{\theta} - \dot{\theta_{d}}) + I_{y}K_{\theta} sat(s_3))\tag{C}
+\end{equation}
+$$
 
 
 # What each scripts contain?
