@@ -706,6 +706,43 @@ return xd, yd, zd, xd_dot, yd_dot, zd_dot, xd_ddot, yd_ddot, zd_ddot
 
 Considering the equations of motion provided above, design boundary layer-based sliding mode control laws for the $z,\phi,\theta,\psi$ coordinates of the quadrotor to track desired trajectories $z_{d}, \phi_{d}, \theta_{d},$ and $\psi_{d}$.
 
+_Remark 2:_ To convert the desired position trajectories $(x_{d} , y_{d} , z_{d} )$ to desired roll and pitch angles $(\phi_{d}, \theta_{d})$, the desired forces in $x$ and $y$ direction can be calculated using PD control (according to Eq. $(a)$ and $(b)$), and the resulting desired forces can be then converted to desired $\phi$ and $\theta$ according to Eq. $(c)$ and Eq. $(d)$:
+
+$$
+F_{x} = m(-k_{p}(x-x_{d})-k_{d}(\dot{x}-\dot{x_{d}}) + \ddot{x_{d}})\tag{a}
+$$
+
+$$
+F_{y} = m(-k_{p}(y-y_{d})-k_{d}(\dot{y}-\dot{y_{d}}) + \ddot{y_{d}})\tag{b}
+$$
+
+$$
+\theta_{d}=sin^{-1}(\frac{F_{x}}{u_{1}})\tag{c}
+$$
+
+
+$$
+\phi_{d}=sin^{-1}(\frac{-F_{y}}{u_{1}})\tag{d}
+$$
+
+_Remark 3:_ For the purpose of this assignment, the desired yaw angle $\psi$, and also the desired angular velocities $\dot{\phi}, \dot{\theta}, \dot{\psi}$ and the desired angular accelerations $\ddot{\phi}, \ddot{\theta}, \ddot{\psi}$ can be considered zero during the motion, i.e:
+
+$$
+\phi_{d}=0
+$$
+
+$$
+\dot{\phi_{d}}=\dot{\theta_{d}}=\dot{\psi_{d}}=0
+$$
+
+$$
+\ddot{\phi_{d}}=\ddot{\theta_{d}}=\ddot{\psi_{d}}=0
+$$
+
+The resulting discrepancy can be considered as an _external disturbance_ that is handled through the robust control design in this assignment.
+
+_Remark 4:_ When designing the sliding mode control laws, assume that all the model parameters are known. In fact, the objective of this assignment is to design a sliding mode controller to be robust under reasonable external disturbances
+
 **Solution:** Four sliding mode controller will be needed to control the drone. $s_{1}, s_{2}, s_{3}, s_{4}$ will control $u_{1}, u_{2}, u_{3}, u_{4}$ respectively, which in turn will control  $z, \phi, \theta$, and $\psi$ respectively.
 
 ### Designing Controller 1 to control z
