@@ -1,8 +1,0 @@
-CrazyS/rqt_rotors
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/.private/rqt_rotors/cmake.lock /home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/./cmake.lock
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/.private/rqt_rotors/bin/cmake.lock /home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/bin/cmake.lock
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/.private/rqt_rotors/bin/hil_plugin /home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/bin/hil_plugin
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/.private/rqt_rotors/share/rqt_rotors/cmake/rqt_rotorsConfig-version.cmake /home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/share/rqt_rotors/cmake/rqt_rotorsConfig-version.cmake
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/.private/rqt_rotors/share/rqt_rotors/cmake/rqt_rotorsConfig.cmake /home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/share/rqt_rotors/cmake/rqt_rotorsConfig.cmake
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/.private/rqt_rotors/lib/pkgconfig/rqt_rotors.pc /home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/lib/pkgconfig/rqt_rotors.pc
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/.private/rqt_rotors/lib/python3/dist-packages/rqt_rotors/__init__.py /home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/lib/python3/dist-packages/rqt_rotors/__init__.py

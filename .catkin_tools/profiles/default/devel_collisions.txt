@@ -1,2 +1,0 @@
-/home/parth/Desktop/Sliding_mode_controller_for_quadrotor/devel/./cmake.lock 59
-/home/prar/Sliding_mode_controller_for_quadrotor/devel/./cmake.lock 42

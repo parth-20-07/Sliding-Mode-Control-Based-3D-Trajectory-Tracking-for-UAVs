@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from math import pi, sqrt, atan2, cos, sin
+from math import pi, sqrt, atan2, cos, sin, asin
 from turtle import position
 import numpy as np
 from numpy import NaN
@@ -51,243 +51,185 @@ class Quadrotor():
         self.Iz = 29.261652 * (10**(-6))
         self.Ip = 12.65625 * (10**(-8))
 
-        self.kf = 1.28192*(10**(-8))
-        self.km = 5.964552*(10**(-3))
+        self.k_f = 1.28192*(10**(-8))
+        self.k_m = 5.964552*(10**(-3))
 
         self.w_max = 2618  # maximum rotary speed
         self.w_min = 0  # minimum rotation speed
 
         self.ohm = 0
         #!: Tune the Kp and Kd Values here
-        self.kp = 0.3
-        self.kd = 0.2
+        self.kp = 50
+        self.kd = 5
 
         #!: Tune the lambda values
-        self.lamda1 = 4
-        self.lamda2 = 4
-        self.lamda3 = 4
-        self.lamda4 = 1
+        self.lamda_z = 5
+        self.lamda_phi = 10
+        self.lamda_theta = 10
+        self.lamda_psi = 5
 
-        self.k1 = 20
-        self.k2 = 35
-        self.k3 = 50
-        self.k4 = 45
+        self.k_z = 25
+        self.k_phi = 150
+        self.k_theta = 150
+        self.k_psi = 20
 
-        self.theta_d = 0
-        self.phi_d = 0
         self.posd = np.array([0, 0, 0])
         self.motor_vel = np.array([0, 0, 0, 0])
 
-        self.calculate_k = True
-        self.round_pi = round(pi, 5)
-
         # Acceptable Tolerance
-        self.tol = 0.0001
+        self.tol = 1
 
     def traj_evaluate(self):
-        # TODO: Trajectory Inputs
-        if (self.t < 5):
-            t = self.t
-            print("traj1")
-            pos1 = np.array([0, 0, 0.0800*t**3 - 0.0240 *
-                             t**4 + 0.0019*t**5])
-            vel1 = np.array([0, 0, 0.2400*t**2 - 0.0960 *
-                             t**3 + 0.0096*t**4])
-            acc1 = np.array([0, 0, 0.4800*t - 0.2880 *
-                             t**2 + 0.0384*t**3])
-            return pos1, vel1, acc1
-        elif (self.t < 20):
-            t = self.t - 5
-            print("traj2")
-            pos2 = np.array([0.0030*t**3 - 0.00029630*t **
-                             4 + 0.0000079012*t**5, 0, 1])
-            vel2 = np.array([0, 0, 0.0800 * t ** 3 - 0.0240 *
-                             t ** 4 + 0.0019 * t ** 5])
-            acc2 = np.array([0.0178*t - 0.0036*t **
-                             2 + 0.00015802*t**3, 0, 0])
-            return pos2, vel2, acc2
-        elif (self.t < 35):
-            t = self.t - 20
-            print("traj3")
-            pos3 = np.array([1, 0.0030 * t ** 3 - 0.00029630 *
-                             t ** 4 + 0.0000079012 * t ** 5, 1])
-            vel3 = np.array([0, 0.0089*t**2 - 0.0012 *
-                             t**3 + 0.000039506*t**4, 0])
-            acc3 = np.array([0, 0.0178 * t - 0.0036 * t **
-                             2 + 0.00015802 * t ** 3, 0])
-            return pos3, vel3, acc3
-        elif (self.t < 50):
-            t = self.t - 35
-            print("traj4")
-            pos4 = np.array([0, 0.0178*t - 0.0036*t **
-                             2 + 0.00015802*t**3, 0])
-            vel4 = np.array([- 0.0089*t**2 + 0.0012*t **
-                             3 - 0.000039506*t**4, 0, 0])
-            acc4 = np.array([- 0.0178*t + 0.0036*t **
-                             2 - 0.00015802*t**3, 0, 0])
-            return pos4, vel4, acc4
-        elif (self.t < 65):
-            t = self.t - 50
-            print("traj5")
-            pos5 = np.array([0, 1 - 0.0030*t**3 + 0.00029630 *
-                             t**4 - 0.0000079012*t**5, 1])
-            vel5 = np.array([0, - 0.0089*t**2 + 0.0012 *
-                             t**3 - 0.000039506*t**4, 0])
-            acc5 = np.array([0, - 0.0178 * t + 0.0036 * t **
-                             2 - 0.00015802 * t ** 3, 0])
-            return pos5, vel5, acc5
+        # Switching the desired trajectory according to time
+        if self.t <= 70:
+            if self.t <= 5:
+                t0, tf, x0, y0, z0, xf, yf, zf, v0, vf, ac0, acf, t = (
+                    0, 5, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, self.t)
+                print(f'Lift OFF - T:{round(self.t,3)}')
+            elif self.t <= 20:
+                t0, tf, x0, y0, z0, xf, yf, zf, v0, vf, ac0, acf, t = (
+                    5, 20, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, self.t)
+                print(f'Path 1 - T:{round(self.t,3)}')
+            elif self.t <= 35:
+                t0, tf, x0, y0, z0, xf, yf, zf, v0, vf, ac0, acf, t = (
+                    20, 35, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, self.t)
+                print(f'Path 2 - T:{round(self.t,3)}')
+            elif self.t <= 50:
+                t0, tf, x0, y0, z0, xf, yf, zf, v0, vf, ac0, acf, t = (
+                    35, 50, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, self.t)
+                print(f'Path 3 - T:{round(self.t,3)}')
+            elif self.t <= 65:
+                t0, tf, x0, y0, z0, xf, yf, zf, v0, vf, ac0, acf, t = (
+                    50, 65, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, self.t)
+                print(f'Path 4 - T:{round(self.t,3)}')
+            else:
+                t0, tf, x0, y0, z0, xf, yf, zf, v0, vf, ac0, acf, t = (
+                    65, 70, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, self.t)
+                print(f'Landing - T:{round(self.t,3)}')
+            A = np.array([[1, t0, t0**2, t0**3, t0**4, t0**5],
+                          [0, 1, 2*t0, 3*t0**2, 4*t0**3, 5*t0**4],
+                          [0, 0, 2, 6*t0, 12*t0**2, 20*t0**3],
+                          [1, tf, tf**2, tf ** 3, tf ** 4, tf ** 5],
+                          [0, 1, 2*tf, 3 * tf ** 2, 4 * tf ** 3, 5 * tf ** 4],
+                          [0, 0, 2, 6 * tf, 12 * tf ** 2, 20 * tf ** 3]])
+            bx = np.array(([x0], [v0], [ac0], [xf], [vf], [acf]))
+            by = np.array(([y0], [v0], [ac0], [yf], [vf], [acf]))
+            bz = np.array(([z0], [v0], [ac0], [zf], [vf], [acf]))
+
+            ax = np.dot(np.linalg.inv(A), bx)
+            ay = np.dot(np.linalg.inv(A), by)
+            az = np.dot(np.linalg.inv(A), bz)
+
+            # Position
+            xd = ax[0] + ax[1]*t + ax[2]*t**2 + \
+                ax[3]*t**3 + ax[4]*t**4 + ax[5]*t**5
+            yd = ay[0] + ay[1]*t + ay[2]*t**2 + \
+                ay[3]*t**3 + ay[4]*t**4 + ay[5]*t**5
+            zd = az[0] + az[1]*t + az[2]*t**2 + \
+                az[3]*t**3 + az[4]*t**4 + az[5]*t**5
+
+            # Velocity
+            xd_dot = ax[1] + 2*ax[2]*t + 3*ax[3] * \
+                t**2 + 4*ax[4]*t**3 + 5*ax[5]*t**4
+            yd_dot = ay[1] + 2*ay[2]*t + 3*ay[3] * \
+                t**2 + 4*ay[4]*t**3 + 5*ay[5]*t**4
+            zd_dot = az[1] + 2*az[2]*t + 3*az[3] * \
+                t**2 + 4*az[4]*t**3 + 5*az[5]*t**4
+
+            # Acceleration
+            xd_ddot = 2*ax[2] + 6*ax[3]*t + 12*ax[4]*t**2 + 20*ax[5]*t**3
+            yd_ddot = 2*ay[2] + 6*ay[3]*t + 12*ay[4]*t**2 + 20*ay[5]*t**3
+            zd_ddot = 2*az[2] + 6*az[3]*t + 12*az[4]*t**2 + 20*az[5]*t**3
         else:
-            return [1, 0, 1], [0, 0, 0], [0, 0, 0]
+            xd, yd, zd, xd_dot, yd_dot, zd_dot, xd_ddot, yd_ddot, zd_ddot = (
+                0, 0, 0, 0, 0, 0, 0, 0, 0)
+            print(f'Landed - T:{round(self.t,3)}')
+            rospy.signal_shutdown("Trajectory Tracking Complete")
+        return xd, yd, zd, xd_dot, yd_dot, zd_dot, xd_ddot, yd_ddot, zd_ddot
 
     def saturation(self, sliding_function):
-        sat = 1
-        if (sliding_function >= self.tol):
-            sat = 1
-        elif (sliding_function <= -self.tol):
-            sat = -1
-        else:
-            sat = sliding_function/self.tol
-        # print(f"sat: {sat}")
+        sat = min(max(sliding_function/self.tol, -1), 1)
         return sat
 
     def wrap_to_pi(self, angle):
-        angle = np.round(angle, 5)
-        if ((angle >= self.round_pi) or (angle <= -self.round_pi)):
-            angle = angle % self.round_pi
-        return angle
+        return (angle+np.pi) % (2 * np.pi)-np.pi
 
     def smc_control(self, xyz, xyz_dot, rpy, rpy_dot):
-        for i in range(3):
-            if (np.isnan(xyz[i])):
-                xyz[i] = 0
-            if (np.isnan(xyz_dot[i])):
-                xyz_dot[i] = 0
-            if (np.isnan(rpy[i])):
-                rpy[i] = 0
-            if (np.isnan(rpy_dot[i])):
-                rpy_dot[i] = 0
-        pos_x = xyz[0]
-        pos_y = xyz[1]
-        pos_z = xyz[2]
-        vel_x = xyz_dot[0]
-        vel_y = xyz_dot[1]
-        vel_z = xyz_dot[2]
-        phi = self.wrap_to_pi(rpy[0])
-        theta = self.wrap_to_pi(rpy[1])
-        psi = self.wrap_to_pi(rpy[2])
-        dphi = rpy_dot[0]
-        dtheta = rpy_dot[1]
-        dpsi = rpy_dot[2]
+        pos_x, pos_y, pos_z = xyz
+        vel_x, vel_y, vel_z = xyz_dot
+        phi, theta, psi = rpy
+        dphi, dtheta, dpsi = rpy_dot
 
         # obtain the desired values by evaluating the corresponding trajectories
-        self.posd, veld, accd = self.traj_evaluate()
-        self.posd = np.round(self.posd, 5)
-        veld = np.round(veld, 5)
-        accd = np.round(accd, 5)
-        pos_x_des = self.posd[0]
-        pos_y_des = self.posd[1]
-        pos_z_des = self.posd[2]
-        vel_x_des = veld[0]
-        vel_y_des = veld[1]
-        vel_z_des = veld[2]
-        acc_x_des = accd[0]
-        acc_y_des = accd[1]
-        acc_z_des = accd[2]
+        xd, yd, zd, xd_dot, yd_dot, zd_dot, xd_ddot, yd_ddot, zd_ddot = self.traj_evaluate()
+        self.posd = [xd, yd, zd]
 
         # TODO: implement the Sliding Mode Control laws designed in Part 2 to calculate the control inputs "u"
-        s1_error_dot = np.round(vel_z-vel_z_des, 5)
-        s1_error = np.round(pos_z-pos_z_des, 5)
-        s1 = (s1_error_dot) + self.lamda1*(s1_error)
+        s1_error_dot = vel_z-zd_dot
+        s1_error = pos_z-zd
+        s1 = (s1_error_dot) + self.lamda_z*(s1_error)
 
-        u1 = (self.m/(cos(theta)*cos(phi))) * \
-            (self.g + acc_z_des - (self.lamda1*s1_error_dot) -
-             (self.k1*self.saturation(s1)))
+        u1 = self.m * (self.g + zd_ddot - (self.lamda_z*s1_error_dot) -
+                       (self.k_z*self.saturation(s1)))/(cos(theta)*cos(phi))
 
         # TODO: Writing the F_x and F_y to calculate theta_d and phi_d
-        x_error = np.round(pos_x - pos_x_des, 5)
-        x_error_dot = np.round(vel_x - vel_x_des, 5)
-        y_error = np.round(pos_y - pos_y_des, 5)
-        y_error_dot = np.round(vel_y - vel_y_des, 5)
+        x_error = pos_x - xd
+        x_error_dot = vel_x - xd_dot
+        y_error = pos_y - yd
+        y_error_dot = vel_y - yd_dot
         force_x = self.m * ((-self.kp*x_error) +
-                            (-self.kd*x_error_dot) + acc_x_des)
+                            (-self.kd*x_error_dot) + xd_ddot)
         force_y = self.m * ((-self.kp*y_error) +
-                            (-self.kd*y_error_dot) + acc_y_des)
+                            (-self.kd*y_error_dot) + yd_ddot)
         sin_theta_des = force_x/u1
         sin_phi_des = -force_y/u1
         # print(f"Des: theta_des:{sin_theta_des} | phi_des:{sin_phi_des}")
-        theta_des = self.wrap_to_pi(np.arcsin(sin_theta_des))
-        phi_des = self.wrap_to_pi(np.arcsin(sin_phi_des))
-        if (np.isnan(theta_des)):
-            theta_des = 0
-        if (np.isnan(phi_des)):
-            phi_des = 0
+        theta_des = asin(sin_theta_des)
+        phi_des = asin(sin_phi_des)
 
-        s2_error_dot = np.round(dphi, 5)
-        s2_error = np.round(phi - phi_des, 5)
-        s2 = (s2_error_dot) + self.lamda2*(s2_error)
-        u2 = - ((dtheta*dpsi*(self.Iy-self.Iz))-(self.Ip*self.ohm*dtheta) +
-                (self.lamda2*self.Ix*s2_error_dot)+(self.Ix*self.k2*self.saturation(s2)))
+        s2_error_dot = dphi
+        s2_error = self.wrap_to_pi(phi - phi_des)
+        s2 = (s2_error_dot) + self.lamda_phi*(s2_error)
+        u2 = - ((dtheta*dpsi*(self.Iy-self.Iz))-(self.Ip*self.ohm*dtheta)
+                + (self.lamda_phi*self.Ix*s2_error_dot)+(self.Ix*self.k_phi*self.saturation(s2)))
 
-        s3_error_dot = np.round(dtheta, 5)
-        s3_error = np.round(theta-theta_des, 5)
-        s3 = (s3_error_dot) + self.lamda1*(s3_error)
-        u3 = -((dphi*dpsi*(self.Iz-self.Ix))+(self.Ip*self.ohm*dphi) +
-               (self.Iy*self.lamda3*s3_error_dot)+(self.Iy*self.k3*self.saturation(s3)))
+        s3_error_dot = dtheta
+        s3_error = self.wrap_to_pi(theta-theta_des)
+        s3 = (s3_error_dot) + self.lamda_z*(s3_error)
+        u3 = -((dphi*dpsi*(self.Iz-self.Ix))+(self.Ip*self.ohm*dphi)
+               + (self.Iy*self.lamda_theta*s3_error_dot)+(self.Iy*self.k_theta*self.saturation(s3)))
 
-        s4_error_dot = np.round(dpsi, 5)
-        s4_error = np.round(psi, 5)
-        s4 = (s4_error_dot) + self.lamda1*(s4_error)
-        u4 = -((dphi*dtheta*(self.Ix-self.Iy))+(self.lamda4 *
-                                                self.Iz*s4_error_dot)+(self.Iz*self.k4*self.saturation(s4)))
+        s4_error_dot = dpsi
+        s4_error = self.wrap_to_pi(psi)
+        s4 = (s4_error_dot) + self.lamda_z*(s4_error)
+        u4 = -((dphi*dtheta*(self.Ix-self.Iy)) +
+               (self.lamda_psi * self.Iz*s4_error_dot)+(self.Iz*self.k_psi*self.saturation(s4)))
 
-        u1 = np.round(u1, 4)
-        u2 = np.round(u2, 4)
-        u3 = np.round(u3, 4)
-        u4 = np.round(u4, 4)
-
-        print(
-            f"Error: z:{s1_error[0]} | y:{y_error[0]} | phi:{s2_error[0]} | x: {x_error[0]} | theta: {s3_error[0]} | psi:{s4_error[0]}")
+        # print(
+        # f"Error: z:{s1_error[0]} | y:{y_error[0]} | phi:{s2_error[0]} | x: {x_error[0]} | theta: {s3_error[0]} | psi:{s4_error[0]}")
         # t: {self.t} |
         # print(f"U: {u1} | {u2} | {u3} | {u4}")
 
         # TODO: convert the desired control inputs "u" to desired rotor velocities "self.motor_vel" by using the "allocation matrix"
-        aa = 1/(4*self.kf)
-        bb = sqrt(2)/(4*self.kf*self.l)
-        cc = 1/(4*self.km*self.kf)
-        w1_square = (aa*u1)-(bb*u2)-(bb*u3)-(cc*u4)
-        w2_square = (aa*u1)-(bb*u2)+(bb*u3)+(cc*u4)
-        w3_square = (aa*u1)+(bb*u2)+(bb*u3)-(cc*u4)
-        w4_square = (aa*u1)+(bb*u2)-(bb*u3)+(cc*u4)
+        u_mat = np.array([u1, u2, u3, u4])
 
-        if (w1_square < 0):
-            w1 = 0
-        else:
-            w1 = round(sqrt(w1_square))
+        # Allocation matrix
+        alloc_mat = np.array(([1/(4*self.k_f), -sqrt(2)/(4*self.k_f*self.l), -sqrt(2)/(4*self.k_f*self.l), -1/(4*self.k_m*self.k_f)],
+                              [1/(4*self.k_f), -sqrt(2)/(4*self.k_f*self.l),
+                               sqrt(2)/(4*self.k_f*self.l),  1/(4*self.k_m*self.k_f)],
+                              [1/(4*self.k_f),  sqrt(2)/(4*self.k_f*self.l),
+                               sqrt(2)/(4*self.k_f*self.l), -1/(4*self.k_m*self.k_f)],
+                              [1/(4*self.k_f),  sqrt(2)/(4*self.k_f*self.l), -sqrt(2)/(4*self.k_f*self.l),  1/(4*self.k_m*self.k_f)]))
 
-        if (w2_square < 0):
-            w2 = 0
-        else:
-            w2 = round(sqrt(w2_square))
-
-        if (w3_square < 0):
-            w3 = 0
-        else:
-            w3 = round(sqrt(w3_square))
-
-        if (w4_square < 0):
-            w4 = 0
-        else:
-            w4 = round(sqrt(w4_square))
-
-        self.motor_vel = [w1, w2, w3, w4]
-        self.ohm = w1-w2+w3-w4
-
-        # TODO: maintain the rotor velocities within the valid range of [0 to 2618]
+        self.motor_vel = np.sqrt(np.dot(alloc_mat, u_mat))
         for i in range(4):
             if (self.motor_vel[i] > self.w_max):
                 self.motor_vel[i] = self.w_max
+        self.ohm = self.motor_vel[0]-self.motor_vel[1] + \
+            self.motor_vel[2]-self.motor_vel[2]
+
         # print(
-            # f"w1: {self.motor_vel[0]} | w2: {self.motor_vel[1]} | w3: {self.motor_vel[2]} | w4: {self.motor_vel[3]}")
+        # f"w1: {self.motor_vel[0]} | w2: {self.motor_vel[1]} | w3: {self.motor_vel[2]} | w4: {self.motor_vel[3]}")
         # publish the motor velocities to the associated ROS topic
 
         motor_speed = Actuators()
@@ -347,26 +289,18 @@ class Quadrotor():
     def save_data(self):
         os.system("")
         # # TODO: update the path below with the correct path. Bring Relative Path
-        # with open("log.pkl", "wb") as fp:
-        #     self.mutex_lock_on = True
-        #     pickle.dump([self.t_series, self.x_series,
-        #                  self.y_series, self.z_series, self.traj_x_series, self.traj_y_series, self.traj_z_series], fp)
-        # with open("omega_log.pkl", "wb") as fp:
-        #     self.mutex_lock_on = True
-        #     pickle.dump([self.t_series, self.w1_series,
-        #                 self.w2_series, self.w3_series, self.w4_series], fp)
+        with open("src/project/scripts/log.pkl", "wb") as fp:
+            self.mutex_lock_on = True
+            pickle.dump([self.t_series, self.x_series,
+                         self.y_series, self.z_series, self.traj_x_series, self.traj_y_series, self.traj_z_series], fp)
         print("Visualizing System Plot")
-        # os.system("python3 visualize.py")
-        # os.system("python3 visualize_omega.py")
+        os.system("rosrun project visualize.py")
 
 
 if __name__ == '__main__':
-    if os.path.exists("log.pkl"):
-        os.remove("log.pkl")
-        os.remove("trajectory.png")
-    if os.path.exists("omega_log.pkl"):
-        os.remove("omega_log.pkl")
-        os.remove("omega.png")
+    if os.path.exists("src/project/scripts/log.pkl"):
+        os.remove("src/project/scripts/log.pkl")
+        os.remove("src/project/scripts/trajectory.png")
     rospy.init_node("quadrotor_control")
     rospy.loginfo("Press Ctrl + C to terminate")
     whatever = Quadrotor()
