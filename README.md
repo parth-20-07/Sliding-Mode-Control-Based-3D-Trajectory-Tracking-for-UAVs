@@ -150,11 +150,11 @@ $$
 
 where $m$ is the quadrotor mass, $g$ is the gravitational acceleration, $I_{p}$ is the propeller moment of inertia, and $I_{x}$, $I_{y}$, $I_{z}$ indicate the quadrotor moment of inertia along the $x$, $y$ and $z$ axes, respectively. Moreover, the term $\Omega$ is expressed as: 
 
-$$
+```math
 \begin{equation}
 \Omega=\omega_{1}-\omega_{2}+\omega_{3}-\omega_{4}\tag{b}
 \end{equation}
-$$.
+```
 
 The physical parameters for the Crazyflie 2.0 hardware are listed below
 |_Parameter_|_Symbol_|_Value_|
