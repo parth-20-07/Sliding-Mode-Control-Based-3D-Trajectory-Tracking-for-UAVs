@@ -67,26 +67,36 @@ $$
 \ddot{x} = \frac{1}{m}(cos\phi sin\theta cos\psi\  + \ sin\phi sin\psi)u_{1}
 \end{equation}
 $$
+
+
 $$
 \begin{equation}
 \ddot{y} = \frac{1}{m}(cos\phi sin\theta sin\psi\  - \ sin\phi cos\psi)u_{1}
 \end{equation}
 $$
+
+
 $$
 \begin{equation}
 \ddot{z} = \frac{1}{m}(cos\phi cos\theta)u_{1}-g
 \end{equation}
 $$
+
+
 $$
 \begin{equation}
 \ddot{\phi} =\dot{\theta}\dot{\psi}\frac{I_{y}-I_{z}}{I_{x}}-\frac{I_{p}}{I_{x}}\Omega \dot{\theta}+\frac{1}{I_{x}}u_{2}
 \end{equation}
 $$
+
+
 $$
 \begin{equation}
 \ddot{\theta} =\dot{\phi}\dot{\psi}\frac{I_{z}-I_{x}}{I_{y}}+\frac{I_{p}}{I_{y}}\Omega \dot{\phi}+\frac{1}{I_{y}}u_{3}
 \end{equation}
 $$
+
+
 $$
 \begin{equation}
 \ddot{\psi} =\dot{\phi}\dot{\theta}\frac{I_{x}-I_{y}}{I_{z}}+\frac{1}{I_{z}}u_{4}
