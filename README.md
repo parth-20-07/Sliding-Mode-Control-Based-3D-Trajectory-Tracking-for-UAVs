@@ -715,8 +715,8 @@ $$
 where, $\dot{e} = \dot{z} - \dot{z_{d}}$ and ${e} = {z} - z_{d}$
 
 $$
-\begin{equation} \label{eq:1}
-\dot{s_{1}} = \ddot{e} + \lambda_{z}\dot{e}
+\begin{equation}
+\dot{s_{1}} = \ddot{e} + \lambda_{z}\dot{e} \tag{1}
 \end{equation}
 $$
 
@@ -725,12 +725,12 @@ where, $\ddot{e} = \ddot{z} - \ddot{z_{d}}$ and $\dot{e} = \dot{z} - \dot{z_{d}}
 Replacing
 
 $$
-\begin{equation} \label{eq:2}
-\ddot{z} = \frac{1}{m}(cos\phi cos\theta)u_{1}-g
+\begin{equation}
+\ddot{z} = \frac{1}{m}(cos\phi cos\theta)u_{1}-g \tag{2}
 \end{equation}
 $$
 
-Placing $\ref{eq:1}$ in $\ref{eq:2}$ and calculating $s_{1}\dot{s_{1}}$:
+Placing $(2)$ in $(1)$ and calculating $s_{1}\dot{s_{1}}$:
 
 $$
 \begin{equation}
@@ -742,7 +742,7 @@ Making the coefficient of $u_{1}$ as 1 will result in:
 
 $$
 \begin{equation}
-s_{1}\dot{s_{1}} = s_{1}\frac{cos\phi cos\theta}{m}(u_{1} + \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}})))
+s_{1}\dot{s_{1}} = s_{1}\frac{cos\phi cos\theta}{m}(u_{1} + \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}})))\tag{3}
 \end{equation}
 $$
 
@@ -750,7 +750,7 @@ The control strategy we came up to is to design a controller which cancels the s
 
 $$
 \begin{equation}
-u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}}) + u_{r})
+u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}}) + u_{r}) \tag{4}
 \end{equation}
 $$
 
@@ -776,7 +776,7 @@ for $K_1 > 0$, the resulting system is always negative, thus asymptotically stab
 
 ```math
 \begin{equation}
-u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}}) + K_{z}sat(s_1))\notag
+u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}}) + K_{z}sat(s_1))\tag(A)
 \end{equation}
 ```
 
