@@ -65,27 +65,36 @@ For a set of desired control inputs, the desired rotor speeds (i.e. $\omega_{i}$
 
 $$
 \begin{equation}
+
 \begin{bmatrix}
 \omega_{1}^2\\
 \omega_{2}^2\\
 \omega_{3}^2\\
 \omega_{4}^2\\
 \end{bmatrix}
+
 =
+
 \begin{bmatrix}
+
 \frac{1}{4k_{f}} & -\frac{\sqrt2}{4k_{f}l} & -\frac{\sqrt2}{4k_{f}l} & -\frac{1}{4k_{f}k_{m}}\\
 \frac{1}{4k_{f}} & -\frac{\sqrt2}{4k_{f}l} & \frac{\sqrt2}{4k_{f}l} & \frac{1}{4k_{f}k_{m}}\\
 \frac{1}{4k_{f}} & \frac{\sqrt2}{4k_{f}l} & \frac{\sqrt2}{4k_{f}l} & -\frac{1}{4k_{f}k_{m}}\\
 \frac{1}{4k_{f}} & \frac{\sqrt2}{4k_{f}l} & -\frac{\sqrt2}{4k_{f}l} & \frac{1}{4k_{f}k_{m}}\\
+
 \end{bmatrix}
+
 \begin{bmatrix}
+
 u_{1}\\
 u_{2}\\
 u_{3}\\
 u_{4}\\
-\end{bmatrix}
-\notag\\
+
+\end{bmatrix}\notag\\
+
 \end{equation}
+
 $$
 
 where $k_{F}$ and $k_{M}$ denote the propeller thrust factor and moment factor, respectively.
