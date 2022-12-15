@@ -289,7 +289,7 @@ The main components of the project are described below.
 
 The sequence of visiting the waypoints does matter. The velocity and acceleration at each waypoint must be equal to zero.
 
-**Solution** A quintic (fifth-order) equation is used for trajectory solution.
+**Solution:** A quintic (fifth-order) equation is used for trajectory solution.
 
 $$
 \begin{equation}
@@ -327,7 +327,7 @@ a_{1}\\
 a_{2}\\
 a_{3}\\
 a_{4}\\
-a_{5}\\
+a_{5}
 \end{bmatrix}
 
 =
@@ -351,7 +351,7 @@ a_{1}\\
 a_{2}\\
 a_{3}\\
 a_{4}\\
-a_{5}\\
+a_{5}
 \end{bmatrix}
 
 =
@@ -369,7 +369,7 @@ q_{0}\\
 \ddot{q_{0}}\\
 q_{f}\\
 \dot{q_{f}}\\
-\ddot{q_{f}}\\
+\ddot{q_{f}}
 \end{bmatrix}
 ```
 
@@ -496,6 +496,95 @@ a_{5d}(t) =
 
 **Part 2.** Considering the equations of motion provided above, design boundary layer-based sliding mode control laws for the $z,\phi,\theta,\psi$ coordinates of the quadrotor to track desired trajectories $z_{d}, \phi_{d}, \theta_{d},$ and $\psi_{d}$.
 
+**Solution:** Four sliding mode controller will be needed to control the drone. $s_{1}, s_{2}, s_{3}, s_{4}$ will control $u_{1}, u_{2}, u_{3}, u_{4}$ respectively, which in turn will control  $z, \phi, \theta$, and $\psi$ respectively.
+
+Designing Controller 1 to control $z$:
+$$
+\begin{equation}
+s_{1} = \dot{e} + \lambda_{1}e\notag
+\end{equation}
+$$
+
+where, $\dot{e} = \dot{z} - \dot{z_{d}}$ and ${e} = {z} - z_{d}$
+
+$$
+\begin{equation}
+\dot{s_{1}} = \ddot{e} + \lambda_{1}\dot{e}\notag
+\end{equation}
+$$
+
+where, $\ddot{e} = \ddot{z} - \ddot{z_{d}}$ and $\dot{e} = \dot{z} - \dot{z_{d}}$
+
+Replacing
+
+$$
+\begin{equation}
+\ddot{z} = \frac{1}{m}(cos\phi cos\theta)u_{1}-g\notag
+\end{equation}
+$$
+
+Calculating $s_{1}\dot{s_{1}}$:
+
+$$
+\begin{equation}
+s_{1}\dot{s_{1}} = s_{1}(\frac{cos\phi cos\theta}{m}u_{1}-g - \ddot{z_{d}} + \lambda_{1}(\dot{z}-\dot{z_{d}}))\notag
+\end{equation}
+$$
+
+Making the coefficient of $u_{1}$ as 1 will result in:
+
+$$
+\begin{equation}
+s_{1}\dot{s_{1}} = s_{1}\frac{cos\phi cos\theta}{m}(u_{1} + \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{1}(\dot{z}-\dot{z_{d}})))
+\end{equation}
+$$
+
+The control strategy we came up to is to design a controller which cancels the system dynamics:
+
+$$
+\begin{equation}
+u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{1}(\dot{z}-v_{z1d}) + u_{r})
+\end{equation}
+$$
+
+where, $u_{r}$ is the robust term.
+
+Placing equation $(8)$ in equation $(7)$ will result in:
+
+$$
+\begin{equation}
+s_{1}\dot{s_{1}} = -s_{1}u_{r}
+\end{equation}
+$$
+
+We are designing the controller with reduced chattering, so we shall be adding a boundary layer of $\gamma$ which is the acceptable tolerance. Thus, assume $u_{r} = K_1 sat(s_1)$. Therefore;
+
+$$
+\begin{equation}
+s_{1}\dot{s_{1}} = -s_{1} K_1 sat(s_1)
+\end{equation}
+$$
+
+for $K_1 > 0$, the resulting system is always negative, thus stable. Thus,
+$$
+\begin{equation}
+u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{1}(\dot{z}-v_{z1d}) + K_1 sat(s_1))
+\end{equation}
+$$
+
+where, 
+
+$$
+\begin{equation}
+sat(s_{1}) =  \left\{\begin{aligned}
+                \mathbf1 && \forall && s_{1}>\gamma\\
+                \frac{s_{1}}{\gamma}&& \forall && -\gamma <s_{1}<\gamma\\
+                -1&& \forall && s_{1}<-\gamma
+               \end{aligned}\right.
+\end{equation}
+$$
+
+where, $\gamma$ is the acceptable error tolerance.
 
 # What each scripts contain?
 
