@@ -68,7 +68,7 @@ For a set of desired control inputs, the desired rotor speeds (i.e. $\omega_{i}$
 \omega_{1}^2\\
 \omega_{2}^2\\
 \omega_{3}^2\\
-\omega_{4}^2\\
+\omega_{4}^2
 \end{bmatrix}
 
 =
@@ -78,8 +78,7 @@ For a set of desired control inputs, the desired rotor speeds (i.e. $\omega_{i}$
 \frac{1}{4k_{f}} & -\frac{\sqrt2}{4k_{f}l} & -\frac{\sqrt2}{4k_{f}l} & -\frac{1}{4k_{f}k_{m}}\\
 \frac{1}{4k_{f}} & -\frac{\sqrt2}{4k_{f}l} & \frac{\sqrt2}{4k_{f}l} & \frac{1}{4k_{f}k_{m}}\\
 \frac{1}{4k_{f}} & \frac{\sqrt2}{4k_{f}l} & \frac{\sqrt2}{4k_{f}l} & -\frac{1}{4k_{f}k_{m}}\\
-\frac{1}{4k_{f}} & \frac{\sqrt2}{4k_{f}l} & -\frac{\sqrt2}{4k_{f}l} & \frac{1}{4k_{f}k_{m}}\\
-
+\frac{1}{4k_{f}} & \frac{\sqrt2}{4k_{f}l} & -\frac{\sqrt2}{4k_{f}l} & \frac{1}{4k_{f}k_{m}}
 \end{bmatrix}
 
 \begin{bmatrix}
@@ -87,8 +86,7 @@ For a set of desired control inputs, the desired rotor speeds (i.e. $\omega_{i}$
 u_{1}\\
 u_{2}\\
 u_{3}\\
-u_{4}\\
-
+u_{4}
 \end{bmatrix}
 ```
 
@@ -148,7 +146,7 @@ The physical parameters for the Crazyflie 2.0 hardware are listed below
 |Rotor maximum speed|$\omega_{max}$|$2618\ rad/s$|
 |Rotor minimum speed|$\omega_{min}$|$0\ rad/s$|
 
-_Remark 1: As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles._
+Remark 1: As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles.
 
 # Setup the environment
 
@@ -290,6 +288,211 @@ The main components of the project are described below.
 - $p_{4} = (0, 1, 1)$ to $p_{5} = (0, 0, 1)$ in 15 seconds
 
 The sequence of visiting the waypoints does matter. The velocity and acceleration at each waypoint must be equal to zero.
+
+**Solution** A quintic (fifth-order) equation is used for trajectory solution.
+
+$$
+\begin{equation}
+q = a_{0} + a_{1}t + a_{2}t^2 + a_{3}t^3 + a_{4}t^4 + a_{5}t^5\notag
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\dot{q} = a_{1} + 2a_{2}t + 3a_{3}t^2 + 4a_{4}t^3 + 5a_{5}t^4\notag
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\ddot{q} = 2a_{2} + 6a_{3}t + 12a_{4}t^2 + 20a_{5}t^3\notag
+\end{equation}
+$$
+
+The $t_{0}$ and $t_{f}$ for each of the position values are provided. Considering $v_{0}$, $v_{f}$, $a_{0}$, $a_{f}$ are zero. Placing the values for $t_{0}$ amd $t_{f}$ along with the corresponding coordinates, the resulting equation results as:
+
+```math
+\begin{bmatrix}
+1 & t_{0} & t_{0}^2 & t_{0}^3 & t_{0}^4 & t_{0}^5\\
+0 & 1 & 2t_{0} & 3t_{0}^2 & 4t_{0}^3 & 5t_{0}^4\\
+0 & 0 & 2 & 6t_{0} & 12t_{0}^2 & 20t_{0}^3\\
+1 & t_{f} & t_{f}^2 & t_{f}^3 & t_{f}^4 & t_{f}^5\\
+0 & 1 & 2t_{f} & 3t_{f}^2 & 4t_{f}^3 & 5t_{f}^4\\
+0 & 0 & 2 & 6t_{f} & 12t_{f}^2 & 20t_{f}^3
+\end{bmatrix}
+
+\begin{bmatrix}
+a_{0}\\
+a_{1}\\
+a_{2}\\
+a_{3}\\
+a_{4}\\
+a_{5}\\
+\end{bmatrix}
+
+=
+
+\begin{bmatrix}
+q_{0}\\
+\dot{q_{0}}\\
+\ddot{q_{0}}\\
+q_{f}\\
+\dot{q_{f}}\\
+\ddot{q_{f}}\\
+\end{bmatrix}
+```
+
+Thus, the coefficients can be calculated using:
+
+```math
+\begin{bmatrix}
+a_{0}\\
+a_{1}\\
+a_{2}\\
+a_{3}\\
+a_{4}\\
+a_{5}\\
+\end{bmatrix}
+
+=
+\begin{bmatrix}
+1 & t_{0} & t_{0}^2 & t_{0}^3 & t_{0}^4 & t_{0}^5\\
+0 & 1 & 2t_{0} & 3t_{0}^2 & 4t_{0}^3 & 5t_{0}^4\\
+0 & 0 & 2 & 6t_{0} & 12t_{0}^2 & 20t_{0}^3\\
+1 & t_{f} & t_{f}^2 & t_{f}^3 & t_{f}^4 & t_{f}^5\\
+0 & 1 & 2t_{f} & 3t_{f}^2 & 4t_{f}^3 & 5t_{f}^4\\
+0 & 0 & 2 & 6t_{f} & 12t_{f}^2 & 20t_{f}^3
+\end{bmatrix}^{-1}
+\begin{bmatrix}
+q_{0}\\
+\dot{q_{0}}\\
+\ddot{q_{0}}\\
+q_{f}\\
+\dot{q_{f}}\\
+\ddot{q_{f}}\\
+\end{bmatrix}
+```
+
+
+Using this, the resulting equations of motion are:
+
+Trajectory 1:
+
+```math
+p_{1d}(t) = 
+\begin{bmatrix}
+0 & 0 & 0.0800t^3-0.0240t^4+0.0019t^5\notag
+\end{bmatrix}
+```
+
+```math
+v_{1d}(t) = 
+\begin{bmatrix}
+0 & 0 & 0.2400t^2-0.0960t^3+0.0096t^4\notag
+\end{bmatrix}
+```
+
+```math
+a_{1d}(t) = 
+\begin{bmatrix}
+0 & 0 & 0.4800t-0.2880t^2+0.0384t^4\notag
+\end{bmatrix}
+```
+
+Trajectory 2:
+
+```math
+p_{2d}(t) = 
+\begin{bmatrix}
+0.0030t^3-2.9630*10^{-4}t^4+7.9012*10^{-6}t^5 & 0 & 1\notag
+\end{bmatrix}
+```
+
+```math
+v_{2d}(t) = 
+\begin{bmatrix}
+0.0089t^2-0.0012t^3+3.9506*10^{-5}t^4 & 0 & 0\notag
+\end{bmatrix}
+```
+
+```math
+a_{2d}(t) = 
+\begin{bmatrix}
+0.0178t - 0.0036t^2+1.5802*10^{-4}t^3 & 0 & 0\notag
+\end{bmatrix}
+```
+
+Trajectory 3:
+
+
+```math
+p_{3d}(t) = 
+\begin{bmatrix}
+1 & 0.0030t^3-2.9630*10^{-4}t^4+7.9012*10^{-6}t^5 & 1\notag
+\end{bmatrix}
+```
+
+```math
+v_{3d}(t) = 
+\begin{bmatrix}
+0 & 0.0089t^2-0.0012t^3+3.9506*10^{-5}t^4 & 0\notag
+\end{bmatrix}
+```
+
+```math
+a_{3d}(t) = 
+\begin{bmatrix}
+0 & 0.0178t-0.0036t^2+1.5802*10^{-4}t^3 & 0\notag
+\end{bmatrix}
+```
+
+Trajectory 4:
+
+
+```math
+p_{4d}(t) = 
+\begin{bmatrix}
+1- 0.0030t^3+2.9630*10^{-4}t^4-7.9012*10^{-6}t^5 & 1 & 1\notag
+\end{bmatrix}
+```
+
+```math
+v_{4d}(t) = 
+\begin{bmatrix}
+-0.0089t^2+0.0012t^3-3.9506*10^{-5}t^4 & 0 & 0\notag
+\end{bmatrix}
+```
+
+```math
+a_{4d}(t) = 
+\begin{bmatrix}
+- 0.0178t+0.0036t^2-1.5802*10^{-4}t^3 & 0 & 0\notag
+\end{bmatrix}
+```
+
+Trajectory 5:
+
+
+```math
+p_{5d}(t) = 
+\begin{bmatrix}
+0 & 1 - 0.0030t^3+2.9630*10^{-4}t^4-7.9012*10^{-6}t^5 & 1\notag
+\end{bmatrix}
+```
+
+```math
+v_{5d}(t) = 
+\begin{bmatrix}
+0 & - 0.0089t^2+0.0012t^3-3.9506*10^{-5}t^4 & 0\notag
+\end{bmatrix}
+```
+
+```math
+a_{5d}(t) = 
+\begin{bmatrix}
+0 & - 0.0178t+0.0036t^2-1.5802*10^{-4}t^3 & 0\notag
+\end{bmatrix}
+```
 
 **Part 2.** Considering the equations of motion provided above, design boundary layer-based sliding mode control laws for the $z,\phi,\theta,\psi$ coordinates of the quadrotor to track desired trajectories $z_{d}, \phi_{d}, \theta_{d},$ and $\psi_{d}$.
 
