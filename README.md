@@ -91,7 +91,7 @@ u_{2}\\
 u_{3}\\
 u_{4}\\
 
-\end{bmatrix}\notag\\
+\end{bmatrix}
 
 \end{equation}
 
