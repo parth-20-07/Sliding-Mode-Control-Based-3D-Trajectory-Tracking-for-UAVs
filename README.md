@@ -722,7 +722,7 @@ $$
 
 where, $\ddot{e} = \ddot{z} - \ddot{z_{d}}$ and $\dot{e} = \dot{z} - \dot{z_{d}}$
 
-Replacing
+Also,
 
 $$
 \begin{equation}
@@ -772,11 +772,89 @@ s_{1}\dot{s_{1}} = -s_{1} K_{z} sat(s_1)\notag
 \end{equation}
 $$
 
-for $K_1 > 0$, the resulting system is always negative, thus asymptotically stable. Thus,
+for $K_z > 0$, the resulting system is always negative, thus asymptotically stable. Thus,
 
 $$
 \begin{equation}
 u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}}) + K_{z}sat(s_1))\tag{A}
+\end{equation}
+$$
+
+
+
+**Designing Controller 2 to control $\phi$:**
+
+$$
+\begin{equation}
+s_{2} = \dot{e} + \lambda_{\phi}e\notag
+\end{equation}
+$$
+
+where, $\dot{e} = \dot{\phi} - \dot{\phi_{d}}$ and ${e} = {\phi} - \phi_{d}$
+
+$$
+\begin{equation}
+\dot{s_{2}} = \ddot{e} + \lambda_{\phi}\dot{e} \tag{5}
+\end{equation}
+$$
+
+where, $\ddot{e} = \ddot{\phi} - \ddot{\phi_{d}}$ and $\dot{e} = \dot{\phi} - \dot{\phi_{d}}$
+
+Also,
+
+$$
+\begin{equation}
+\ddot{\phi} =\dot{\theta}\dot{\psi}\frac{I_{y}-I_{z}}{I_{x}}-\frac{I_{p}}{I_{x}}\Omega \dot{\theta}+\frac{1}{I_{x}}u_{2}\tag{6}
+\end{equation}
+$$
+
+Placing $(6)$ in $(5)$ and calculating $s_{2}\dot{s_{2}}$:
+
+$$
+\begin{equation}
+s_{2}\dot{s_{2}} = s_{2}(\dot{\theta}\dot{\psi}\frac{I_{y}-I_{z}}{I_{x}}-\frac{I_{p}}{I_{x}}\Omega \dot{\theta}+\frac{1}{I_{x}}u_{2}-\ddot{\phi_{d}} + \lambda_{\phi}(\dot{\phi} - \dot{\phi_{d}}))\notag
+\end{equation}
+$$
+
+Making the coefficient of $u_{2}$ as 1 will result in:
+
+$$
+\begin{equation}
+s_{2}\dot{s_{2}} = \frac{s_{2}}{I_{x}}(u_{2} + (\dot{\theta}\dot{\psi}(I_{y}-I_{z})-I_{p}\Omega \dot{\theta}-I_{x}\ddot{\phi_{d}} + I_{x}\lambda_{\phi}(\dot{\phi} - \dot{\phi_{d}})))\tag{7}
+\end{equation}
+$$
+
+The control strategy we came up to is to design a controller which cancels the system dynamics:
+
+$$
+\begin{equation}
+u_{2} = -(\dot{\theta}\dot{\psi}(I_{y}-I_{z})-I_{p}\Omega \dot{\theta}-I_{x}\ddot{\phi_{d}} + I_{x}\lambda_{\phi}(\dot{\phi} - \dot{\phi_{d}}) + I_{x}u_{r})\tag{8}
+\end{equation}
+$$
+
+where, $u_{r}$ is the robust term.
+
+Placing equation $(8)$ in equation $(7)$ will result in:
+
+$$
+\begin{equation}
+s_{2}\dot{s_{2}} = -s_{2}u_{r}\notag
+\end{equation}
+$$
+
+We are designing the controller with reduced chattering, so we shall be adding a boundary layer of $\gamma$ which is the acceptable tolerance. Thus, assume $u_{r} = K_{\phi} sat(s_2)$. Therefore;
+
+$$
+\begin{equation}
+s_{2}\dot{s_{2}} = -s_{2} K_{\phi} sat(s_2)\notag
+\end{equation}
+$$
+
+for $K_{\phi} > 0$, the resulting system is always negative, thus asymptotically stable. Thus,
+
+$$
+\begin{equation}
+u_{2} = -(\dot{\theta}\dot{\psi}(I_{y}-I_{z})-I_{p}\Omega \dot{\theta}-I_{x}\ddot{\phi_{d}} + I_{x}\lambda_{\phi}(\dot{\phi} - \dot{\phi_{d}}) + I_{x}K_{\phi} sat(s_2))\tag{B}
 \end{equation}
 $$
 
