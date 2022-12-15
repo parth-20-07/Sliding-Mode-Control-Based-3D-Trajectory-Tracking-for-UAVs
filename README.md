@@ -15,11 +15,16 @@
         - [Designing Controller 3 to control theta](#designing-controller-3-to-control-theta)
         - [Designing Controller 4 to control psi](#designing-controller-4-to-control-psi)
     - [Part 3: Programming the Controllers](#part-3-programming-the-controllers)
+        - [Fetching the current drone parameters](#fetching-the-current-drone-parameters)
         - [Controller 1](#controller-1)
         - [Controller 2](#controller-2)
         - [Controller 3](#controller-3)
         - [Controller 4](#controller-4)
         - [Saturation Function](#saturation-function)
+        - [Allocation Matrix](#allocation-matrix)
+        - [Limiting Rotor Velocity](#limiting-rotor-velocity)
+        - [Calculating Omega](#calculating-omega)
+        - [Publishing the Rotor Values to topic](#publishing-the-rotor-values-to-topic)
 - [Packages used](#packages-used)
 - [Designer Details](#designer-details)
 - [Acknowledgements](#acknowledgements)
@@ -74,7 +79,9 @@ where $u_{1}$ is the force from all the propellers, and $u_{2}$, $u_{3}$, and $u
 
 For a set of desired control inputs, the desired rotor speeds (i.e. $\omega_{i}$ for $i$ = 1, 2, 3, 4) are obtained by using the “allocation matrix”:
 
-```math
+<!-- ```math -->
+$$
+\begin{equation}
 \begin{bmatrix}
 \omega_{1}^2\\
 \omega_{2}^2\\
@@ -98,8 +105,10 @@ u_{1}\\
 u_{2}\\
 u_{3}\\
 u_{4}
-\end{bmatrix}
-```
+\end{bmatrix}\tag{a}
+\end{equation}
+$$
+<!-- ``` -->
 
 where $k_{F}$ and $k_{M}$ denote the propeller thrust factor and moment factor, respectively.
 
@@ -141,7 +150,12 @@ $$
 \end{equation}
 $$
 
-where $m$ is the quadrotor mass, $g$ is the gravitational acceleration, $I_{p}$ is the propeller moment of inertia, and $I_{x}$, $I_{y}$, $I_{z}$ indicate the quadrotor moment of inertia along the $x$, $y$ and $z$ axes, respectively. Moreover, the term $\Omega$ is expressed as: $\Omega=\omega_{1}-\omega_{2}+\omega_{3}-\omega_{4}$.
+where $m$ is the quadrotor mass, $g$ is the gravitational acceleration, $I_{p}$ is the propeller moment of inertia, and $I_{x}$, $I_{y}$, $I_{z}$ indicate the quadrotor moment of inertia along the $x$, $y$ and $z$ axes, respectively. Moreover, the term $\Omega$ is expressed as: 
+$$
+\begin{equation}
+\Omega=\omega_{1}-\omega_{2}+\omega_{3}-\omega_{4}\tag{b}
+\end{equation}
+$$.
 
 The physical parameters for the Crazyflie 2.0 hardware are listed below
 |_Parameter_|_Symbol_|_Value_|
@@ -711,23 +725,23 @@ return xd, yd, zd, xd_dot, yd_dot, zd_dot, xd_ddot, yd_ddot, zd_ddot
 
 Considering the equations of motion provided above, design boundary layer-based sliding mode control laws for the $z,\phi,\theta,\psi$ coordinates of the quadrotor to track desired trajectories $z_{d}, \phi_{d}, \theta_{d},$ and $\psi_{d}$.
 
-_Remark 2:_ To convert the desired position trajectories $(x_{d} , y_{d} , z_{d} )$ to desired roll and pitch angles $(\phi_{d}, \theta_{d})$, the desired forces in $x$ and $y$ direction can be calculated using PD control (according to Eq. $(a)$ and $(b)$), and the resulting desired forces can be then converted to desired $\phi$ and $\theta$ according to Eq. $(c)$ and Eq. $(d)$:
+_Remark 2:_ To convert the desired position trajectories $(x_{d} , y_{d} , z_{d} )$ to desired roll and pitch angles $(\phi_{d}, \theta_{d})$, the desired forces in $x$ and $y$ direction can be calculated using PD control (according to Eq. $(c)$ and $(d)$), and the resulting desired forces can be then converted to desired $\phi$ and $\theta$ according to Eq. $(e)$ and Eq. $(f)$:
 
 $$
-F_{x} = m(-k_{p}(x-x_{d})-k_{d}(\dot{x}-\dot{x_{d}}) + \ddot{x_{d}})\tag{a}
-$$
-
-$$
-F_{y} = m(-k_{p}(y-y_{d})-k_{d}(\dot{y}-\dot{y_{d}}) + \ddot{y_{d}})\tag{b}
+F_{x} = m(-k_{p}(x-x_{d})-k_{d}(\dot{x}-\dot{x_{d}}) + \ddot{x_{d}})\tag{c}
 $$
 
 $$
-\theta_{d}=sin^{-1}(\frac{F_{x}}{u_{1}})\tag{c}
+F_{y} = m(-k_{p}(y-y_{d})-k_{d}(\dot{y}-\dot{y_{d}}) + \ddot{y_{d}})\tag{d}
+$$
+
+$$
+\theta_{d}=sin^{-1}(\frac{F_{x}}{u_{1}})\tag{e}
 $$
 
 
 $$
-\phi_{d}=sin^{-1}(\frac{-F_{y}}{u_{1}})\tag{d}
+\phi_{d}=sin^{-1}(\frac{-F_{y}}{u_{1}})\tag{f}
 $$
 
 _Remark 3:_ For the purpose of this assignment, the desired yaw angle $\psi$, and also the desired angular velocities $\dot{\phi}, \dot{\theta}, \dot{\psi}$ and the desired angular accelerations $\ddot{\phi}, \ddot{\theta}, \ddot{\psi}$ can be considered zero during the motion, i.e:
@@ -1063,6 +1077,12 @@ control design on the Crazyflie 2.0 quadrotor in Gazebo. You can create a new RO
 
 **Solution:**
 
+### Fetching the current drone parameters
+
+The drone publishes current _pose_ on `/crazyflie2/ground_truth/odometry` topic.
+
+We have created a subscriber that subscribes to this topic and converts it into $(x,y,z)$, $(\dot{x},\dot{y},\dot{z})$, $(\phi,\theta,\psi)$ and  $(\dot\phi,\dot\theta,\dot\psi)$ inside the `def odom_callback(self, msg)` function.
+
 ### Controller 1
 
 Controller 1 is implemented as follows
@@ -1226,6 +1246,67 @@ The saturation function works as follows for acceptable error $(\gamma)$ defined
 - When $s > \gamma$, saturation function returns 1
 - When $-\gamma < s < \gamma$, saturation function returns $\frac{s}{\gamma}$
 - When $s < -\gamma$, saturation function returns -1
+
+### Allocation Matrix
+
+Using allocation matrix, as defined in $(a)$, we convert the $u_{1}, u_{2}, u_{3}, u_{4}$ to ${\omega_{1}^{2}, \omega_{2}^{2}, \omega_{3}^{2}, \omega_{4}^{2}}$. Taking the square roots of it will give us $\omega_{1}, \omega_{2}, \omega_{3}, \omega_{4}$
+
+```
+alloc_mat = np.array((
+    [
+        1/(4*self.k_f),
+        -sqrt(2)/(4*self.k_f*self.l),
+        -sqrt(2)/(4*self.k_f*self.l),
+        -1/(4*self.k_m*self.k_f)
+    ],
+    [
+        1/(4*self.k_f),
+        -sqrt(2)/(4*self.k_f*self.l),
+        sqrt(2)/(4*self.k_f*self.l),
+        1/(4*self.k_m*self.k_f)
+    ],
+    [
+        1/(4*self.k_f),
+        sqrt(2)/(4*self.k_f*self.l),
+        sqrt(2)/(4*self.k_f*self.l),
+        -1/(4*self.k_m*self.k_f)
+    ],
+    [
+        1/(4*self.k_f),
+        sqrt(2)/(4*self.k_f*self.l),
+        -sqrt(2)/(4*self.k_f*self.l),
+        1/(4*self.k_m*self.k_f)
+    ]))
+
+self.motor_vel = np.sqrt(np.dot(alloc_mat, u_mat))
+```
+
+### Limiting Rotor Velocity
+
+It might happen during the control that the required velocity to control the drone is much higher than actually the drone can apply. We need to limit the maximum possible drone velocity. Max possible drone velocity for us is $\omega_{max} = 2618 rad/s$.
+```
+for i in range(4):
+    if (self.motor_vel[i] > self.w_max):
+        self.motor_vel[i] = self.w_max
+```
+
+### Calculating Omega
+
+$\Omega$ needs to be calculated to determine $u_2, u_3, u_4$ as indicated from $(b)$. That is done as follows
+```
+self.ohm = self.motor_vel[0]-self.motor_vel[1] + self.motor_vel[2]-self.motor_vel[2]
+```
+
+### Publishing the Rotor Values to topic
+
+The calculated rotor values are published to topic: `/crazyflie2/command/motor_speed` using the `self.motor_speed_pub.publish(message)` command.
+
+```
+motor_speed = Actuators()
+# note we need to convert in motor velocities
+motor_speed.angular_velocities = [self.motor_vel[0], self.motor_vel[1], self.motor_vel[2], self.motor_vel[3]]
+self.motor_speed_pub.publish(motor_speed)
+```
 
 # Packages used
 - [Symbolic Python (sympy)](https://github.com/sympy/sympy)
