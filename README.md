@@ -724,7 +724,7 @@ return xd, yd, zd, xd_dot, yd_dot, zd_dot, xd_ddot, yd_ddot, zd_ddot
 
 Considering the equations of motion provided above, design boundary layer-based sliding mode control laws for the $z,\phi,\theta,\psi$ coordinates of the quadrotor to track desired trajectories $z_{d}, \phi_{d}, \theta_{d},$ and $\psi_{d}$.
 
-_Remark 2:_ To convert the desired position trajectories $(x_{d} , y_{d} , z_{d} )$ to desired roll and pitch angles $(\phi_{d}, \theta_{d})$, the desired forces in $x$ and $y$ direction can be calculated using PD control (according to Eq. $(c)$ and $(d)$), and the resulting desired forces can be then converted to desired $\phi$ and $\theta$ according to Eq. $(e)$ and Eq. $(f)$:
+_Remark 2:_ To convert the desired position trajectories $(x_{d} , y_{d} , z_{d} )$ to desired roll and pitch angles $(\phi_{d}, \theta_{d})$, the desired forces in $x$ and $y$ direction can be calculated using PD control (according to Eq. $(c)$ and $(d)$ ), and the resulting desired forces can be then converted to desired $\phi$ and $\theta$ according to Eq. $(e)$ and Eq. $(f)$:
 
 $$
 F_{x} = m(-k_{p}(x-x_{d})-k_{d}(\dot{x}-\dot{x_{d}}) + \ddot{x_{d}})\tag{c}
