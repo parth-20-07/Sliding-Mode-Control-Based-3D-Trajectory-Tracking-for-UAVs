@@ -576,16 +576,18 @@ u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{1}(\dot{z}-v_
 where, 
 
 ```math
-\begin{equation}
-sat(s_{1}) =  \{\begin{aligned}
-                \mathbf 1 && \forall && s_{1}>\gamma\\
-                \frac{s_{1}}{\gamma}  && \forall && -\gamma<s_{1}<\gamma\\
-                -1 && \forall && s_{1}<-\gamma\\
-               \end{aligned}
-\notag
-\end{equation}
+sat(s_{1})
+=
+\begin{matrix}
+1 \\\frac{s_{1}}{\gamma} \\-1
+\end{matrix}
+\begin{matrix}
+&\forall &\\& \forall& \\& \forall&
+\end{matrix}
+\begin{matrix}
+s_{1}>\gamma \\-\gamma<s_{1}<\gamma \\s_{1}<-\gamma
+\end{matrix}
 ```
-
 
 where, $\gamma$ is the acceptable error tolerance.
 
