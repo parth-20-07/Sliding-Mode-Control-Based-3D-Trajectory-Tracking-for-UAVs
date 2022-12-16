@@ -607,12 +607,12 @@ def traj_evaluate(self):
 ```
 
 The conditional statements provide the trajectories between two points based on current time. It returns trajectory start and end point as follows:
- - $ t < 5 s \rightarrow p_{0} - p_{1}$ 
- - $ 5 s < t < 20 s \rightarrow p_{1} - p_{2}$ 
- - $ 20 s < t < 35 s \rightarrow p_{2} - p_{3}$ 
- - $ 35 s < t < 50 s \rightarrow p_{3} - p_{4}$ 
- - $ 50 s < t < 65 s \rightarrow p_{4} - p_{5}$ 
- - $ 65 s < t < 70 s \rightarrow p_{5} - p_{6}$ 
+ - $ t < 5 s : p_{0} - p_{1}$ 
+ - $ 5 s < t < 20 s : p_{1} - p_{2}$ 
+ - $ 20 s < t < 35 s : p_{2} - p_{3}$ 
+ - $ 35 s < t < 50 s : p_{3} - p_{4}$ 
+ - $ 50 s < t < 65 s : p_{4} - p_{5}$ 
+ - $ 65 s < t < 70 s : p_{5} - p_{6}$ 
 
 $p_{6}$ ensures that drone lands so it does not crash when the simulation ends.
 
