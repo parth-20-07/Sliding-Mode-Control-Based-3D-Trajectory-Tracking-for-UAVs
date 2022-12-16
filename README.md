@@ -3,7 +3,6 @@
 <!-- TOC -->
 
 - [Introduction](#introduction)
-- [Dynamic Model](#dynamic-model)
 - [Setup the environment](#setup-the-environment)
     - [Install ROS1 Noetic](#install-ros1-noetic)
     - [Setup Crazyflie 2.0 Quadrotor in Gazebo](#setup-crazyflie-20-quadrotor-in-gazebo)
@@ -57,125 +56,6 @@ Crazyflie 2.0 Quadrotor Gazebo Simulation
 
 _Note: The Complete project is build and tested on Ubuntu 20.04LTS with ROS Noetic and not tested on any other system. Kindly proceed with caution and loads of google usage for porting it to any other system. And as always, common sense is must before anything!!_
 
-# Dynamic Model
-The quadrotor model is shown below.
-
-![Drone Frames](/Resources/Photos/Drone%20Frames.png)
-
-Considering two coordinate frames specifically the world coordinate frame - $O_{W}$ and the body coordinate frame $O_{B}$ - the generalized coordinates for a quadrotor model are defined as:
-
-$$
-\begin{equation}
-q = [x\  y\  z\  \phi\  \theta\ \psi]^{T}\notag\\
-\end{equation}
-$$
-
-with the translational coordinates $x$, $y$, $z$ with respect to the world frame, and the roll $\phi$, pitch $\theta$ and yaw $\psi$ angles with respect to the body frame.
-
-The control inputs on the system can be considered simply as:
-
-$$
-\begin{equation}
-u = [u_{1}\ u_{2}\ u_{3}\ u_{4}]\notag\\
-\end{equation}
-$$
-
-where $u_{1}$ is the force from all the propellers, and $u_{2}$, $u_{3}$, and $u_{4}$ are the moments applied about the body frame axes by the propellers.
-
-For a set of desired control inputs, the desired rotor speeds (i.e. $\omega_{i}$ for $i$ = 1, 2, 3, 4) are obtained by using the “allocation matrix”:
-
-```math
-\begin{equation}
-\begin{bmatrix}
-\omega_{1}^2\\
-\omega_{2}^2\\
-\omega_{3}^2\\
-\omega_{4}^2
-\end{bmatrix}
-
-=
-
-\begin{bmatrix}
-
-\frac{1}{4k_{f}} & -\frac{\sqrt2}{4k_{f}l} & -\frac{\sqrt2}{4k_{f}l} & -\frac{1}{4k_{f}k_{m}}\\
-\frac{1}{4k_{f}} & -\frac{\sqrt2}{4k_{f}l} & \frac{\sqrt2}{4k_{f}l} & \frac{1}{4k_{f}k_{m}}\\
-\frac{1}{4k_{f}} & \frac{\sqrt2}{4k_{f}l} & \frac{\sqrt2}{4k_{f}l} & -\frac{1}{4k_{f}k_{m}}\\
-\frac{1}{4k_{f}} & \frac{\sqrt2}{4k_{f}l} & -\frac{\sqrt2}{4k_{f}l} & \frac{1}{4k_{f}k_{m}}
-\end{bmatrix}
-
-\begin{bmatrix}
-
-u_{1}\\
-u_{2}\\
-u_{3}\\
-u_{4}
-\end{bmatrix}\tag{a}
-\end{equation}
-```
-
-where $k_{F}$ and $k_{M}$ denote the propeller thrust factor and moment factor, respectively.
-
-Considering the generalized coordinates and the control inputs defined above, the simplified equations of motion (assuming small angles) for the translational  accelerations and body frame angular accelerations are derived as:
-
-$$
-\begin{equation}
-\ddot{x} = \frac{1}{m}(cos\phi sin\theta cos\psi\  + \ sin\phi sin\psi)u_{1}\notag
-\end{equation}
-$$
-
-$$
-\begin{equation}
-\ddot{y} = \frac{1}{m}(cos\phi sin\theta sin\psi\  - \ sin\phi cos\psi)u_{1}\notag
-\end{equation}
-$$
-
-$$
-\begin{equation}
-\ddot{z} = \frac{1}{m}(cos\phi cos\theta)u_{1}-g\notag
-\end{equation}
-$$
-
-$$
-\begin{equation}
-\ddot{\phi} =\dot{\theta}\dot{\psi}\frac{I_{y}-I_{z}}{I_{x}}-\frac{I_{p}}{I_{x}}\Omega \dot{\theta}+\frac{1}{I_{x}}u_{2}\notag
-\end{equation}
-$$
-
-$$
-\begin{equation}
-\ddot{\theta} =\dot{\phi}\dot{\psi}\frac{I_{z}-I_{x}}{I_{y}}+\frac{I_{p}}{I_{y}}\Omega \dot{\phi}+\frac{1}{I_{y}}u_{3}\notag
-\end{equation}
-$$
-
-$$
-\begin{equation}
-\ddot{\psi} =\dot{\phi}\dot{\theta}\frac{I_{x}-I_{y}}{I_{z}}+\frac{1}{I_{z}}u_{4}\notag
-\end{equation}
-$$
-
-where $m$ is the quadrotor mass, $g$ is the gravitational acceleration, $I_{p}$ is the propeller moment of inertia, and $I_{x}$, $I_{y}$, $I_{z}$ indicate the quadrotor moment of inertia along the $x$, $y$ and $z$ axes, respectively. Moreover, the term $\Omega$ is expressed as: 
-
-```math
-\begin{equation}
-\Omega=\omega_{1}-\omega_{2}+\omega_{3}-\omega_{4}\tag{b}
-\end{equation}
-```
-
-The physical parameters for the Crazyflie 2.0 hardware are listed below
-|_Parameter_|_Symbol_|_Value_|
-|-----------|--------|-------|
-|Quadrotor mass|$m$|$27\ g$|
-|Quadrotor arm length|$l$|$46\ mm$|
-|Quadrotor inertia along x-axis|$I_{x}$|$16.571710*10^{-6}\ kg.m^{2}$|
-|Quadrotor inertia along y-axis|$I_{y}$|$16.571710*10^{-6}\ kg.m^{2}$|
-|Quadrotor inertia along z-axis|$I_{z}$|$29.261652*10^{-6}\ kg.m^{2}$|
-|Propeller moment of Inertia|$I_{p}$|$12.65625*10^{-8}kg.m^{2}$|
-|Propeller thrust factor|$k_{F}$|$1.28192*10^{-8}N.s^{2}$|
-|Propeller moment factor|$k_{M}$|$5.964552*10^{-3}m$|
-|Rotor maximum speed|$\omega_{max}$|$2618\ rad/s$|
-|Rotor minimum speed|$\omega_{min}$|$0\ rad/s$|
-
-_Remark 1:_ As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles.
 
 # Setup the environment
 
@@ -303,6 +183,127 @@ roslaunch rotors_gazebo crazyflie2_without_controller.launch
 ```
 
 Congrats, All the setup is done for the simulation to start. You can start writing your own algorithm if you want to!! :smiley:
+
+# Dynamic Model
+The quadrotor model is shown below.
+
+![Drone Frames](/Resources/Photos/Drone%20Frames.png)
+
+Considering two coordinate frames specifically the world coordinate frame - $O_{W}$ and the body coordinate frame $O_{B}$ - the generalized coordinates for a quadrotor model are defined as:
+
+$$
+\begin{equation}
+q = [x\  y\  z\  \phi\  \theta\ \psi]^{T}\notag\\
+\end{equation}
+$$
+
+with the translational coordinates $x$, $y$, $z$ with respect to the world frame, and the roll $\phi$, pitch $\theta$ and yaw $\psi$ angles with respect to the body frame.
+
+The control inputs on the system can be considered simply as:
+
+$$
+\begin{equation}
+u = [u_{1}\ u_{2}\ u_{3}\ u_{4}]\notag\\
+\end{equation}
+$$
+
+where $u_{1}$ is the force from all the propellers, and $u_{2}$, $u_{3}$, and $u_{4}$ are the moments applied about the body frame axes by the propellers.
+
+For a set of desired control inputs, the desired rotor speeds (i.e. $\omega_{i}$ for $i$ = 1, 2, 3, 4) are obtained by using the “allocation matrix”:
+
+```math
+\begin{equation}
+\begin{bmatrix}
+\omega_{1}^2\\
+\omega_{2}^2\\
+\omega_{3}^2\\
+\omega_{4}^2
+\end{bmatrix}
+
+=
+
+\begin{bmatrix}
+
+\frac{1}{4k_{f}} & -\frac{\sqrt2}{4k_{f}l} & -\frac{\sqrt2}{4k_{f}l} & -\frac{1}{4k_{f}k_{m}}\\
+\frac{1}{4k_{f}} & -\frac{\sqrt2}{4k_{f}l} & \frac{\sqrt2}{4k_{f}l} & \frac{1}{4k_{f}k_{m}}\\
+\frac{1}{4k_{f}} & \frac{\sqrt2}{4k_{f}l} & \frac{\sqrt2}{4k_{f}l} & -\frac{1}{4k_{f}k_{m}}\\
+\frac{1}{4k_{f}} & \frac{\sqrt2}{4k_{f}l} & -\frac{\sqrt2}{4k_{f}l} & \frac{1}{4k_{f}k_{m}}
+\end{bmatrix}
+
+\begin{bmatrix}
+
+u_{1}\\
+u_{2}\\
+u_{3}\\
+u_{4}
+\end{bmatrix}\tag{a}
+\end{equation}
+```
+
+where $k_{F}$ and $k_{M}$ denote the propeller thrust factor and moment factor, respectively.
+
+Considering the generalized coordinates and the control inputs defined above, the simplified equations of motion (assuming small angles) for the translational  accelerations and body frame angular accelerations are derived as:
+
+$$
+\begin{equation}
+\ddot{x} = \frac{1}{m}(cos\phi sin\theta cos\psi\  + \ sin\phi sin\psi)u_{1}\notag
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\ddot{y} = \frac{1}{m}(cos\phi sin\theta sin\psi\  - \ sin\phi cos\psi)u_{1}\notag
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\ddot{z} = \frac{1}{m}(cos\phi cos\theta)u_{1}-g\notag
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\ddot{\phi} =\dot{\theta}\dot{\psi}\frac{I_{y}-I_{z}}{I_{x}}-\frac{I_{p}}{I_{x}}\Omega \dot{\theta}+\frac{1}{I_{x}}u_{2}\notag
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\ddot{\theta} =\dot{\phi}\dot{\psi}\frac{I_{z}-I_{x}}{I_{y}}+\frac{I_{p}}{I_{y}}\Omega \dot{\phi}+\frac{1}{I_{y}}u_{3}\notag
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\ddot{\psi} =\dot{\phi}\dot{\theta}\frac{I_{x}-I_{y}}{I_{z}}+\frac{1}{I_{z}}u_{4}\notag
+\end{equation}
+$$
+
+where $m$ is the quadrotor mass, $g$ is the gravitational acceleration, $I_{p}$ is the propeller moment of inertia, and $I_{x}$, $I_{y}$, $I_{z}$ indicate the quadrotor moment of inertia along the $x$, $y$ and $z$ axes, respectively. Moreover, the term $\Omega$ is expressed as: 
+
+```math
+\begin{equation}
+\Omega=\omega_{1}-\omega_{2}+\omega_{3}-\omega_{4}\tag{b}
+\end{equation}
+```
+
+The physical parameters for the Crazyflie 2.0 hardware are listed below
+|_Parameter_|_Symbol_|_Value_|
+|-----------|--------|-------|
+|Quadrotor mass|$m$|$27\ g$|
+|Quadrotor arm length|$l$|$46\ mm$|
+|Quadrotor inertia along x-axis|$I_{x}$|$16.571710*10^{-6}\ kg.m^{2}$|
+|Quadrotor inertia along y-axis|$I_{y}$|$16.571710*10^{-6}\ kg.m^{2}$|
+|Quadrotor inertia along z-axis|$I_{z}$|$29.261652*10^{-6}\ kg.m^{2}$|
+|Propeller moment of Inertia|$I_{p}$|$12.65625*10^{-8}kg.m^{2}$|
+|Propeller thrust factor|$k_{F}$|$1.28192*10^{-8}N.s^{2}$|
+|Propeller moment factor|$k_{M}$|$5.964552*10^{-3}m$|
+|Rotor maximum speed|$\omega_{max}$|$2618\ rad/s$|
+|Rotor minimum speed|$\omega_{min}$|$0\ rad/s$|
+
+_Remark 1:_ As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles.
+
 
 # Problem Statement
 Design a sliding mode controller for _altitude_ and _attitude_ control of the Crazyflie 2.0 to enable the quadrotor to track desired trajectories and visit a set of desired waypoints. 
