@@ -6,6 +6,7 @@
 - [Setup the environment](#setup-the-environment)
     - [Install ROS1 Noetic](#install-ros1-noetic)
     - [Setup Crazyflie 2.0 Quadrotor in Gazebo](#setup-crazyflie-20-quadrotor-in-gazebo)
+- [Dynamic Model](#dynamic-model)
 - [Problem Statement](#problem-statement)
     - [Part 1: Trajectory Generation](#part-1-trajectory-generation)
     - [Part 2: Controller Design](#part-2-controller-design)
@@ -30,8 +31,7 @@
         - [Performance Visualization](#performance-visualization)
     - [Part 5: Performance Testing in Gazebo](#part-5-performance-testing-in-gazebo)
 - [Packages used](#packages-used)
-- [Designer Details](#designer-details)
-- [Acknowledgements](#acknowledgements)
+- [Design Details](#design-details)
 - [License](#license)
 
 <!-- /TOC -->
@@ -1484,10 +1484,15 @@ def visualization(x_series, y_series, z_series, traj_x_series, traj_y_series,tra
     Our tuning resulted in an acceptable error of 0.01 with $e_{max} = 0.03$ at any possible times.
 
 # Packages used
-- [Symbolic Python (sympy)](https://github.com/sympy/sympy)
-- matplotlib
+- [math](https://docs.python.org/3/library/math.html)
+- [numpy](https://numpy.org/)
+- [rospy](http://wiki.ros.org/rospy)
+- [pickle](https://docs.python.org/3/library/pickle.html)
+- [os](https://docs.python.org/3/library/os.html)
+- [sympy](https://github.com/sympy/sympy)
+- [matplotlib](https://matplotlib.org/1.3.0/index.html)
 
-# Designer Details
+# Design Details
 
 - Designed for:
   - Worcester Polytechnic Institute
@@ -1496,7 +1501,6 @@ def visualization(x_series, y_series, z_series, traj_x_series, traj_y_series,tra
   - [Parth Patel](mailto:parth.pmech@gmail.com)
   - [Prarthana Sigedar](mailto:prarthana.sigedar@gmail.com)
 
-# Acknowledgements
 
 # License
 
