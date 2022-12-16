@@ -14,6 +14,7 @@
         - [Designing Controller 2 to control phi](#designing-controller-2-to-control-phi)
         - [Designing Controller 3 to control theta](#designing-controller-3-to-control-theta)
         - [Designing Controller 4 to control psi](#designing-controller-4-to-control-psi)
+        - [Tuning parameters](#tuning-parameters)
     - [Part 3: Programming the Controllers](#part-3-programming-the-controllers)
         - [Fetching the current drone parameters](#fetching-the-current-drone-parameters)
         - [Controller 1](#controller-1)
@@ -28,7 +29,7 @@
     - [Parth 4: Plotting the system performance](#parth-4-plotting-the-system-performance)
         - [Saving System Data into Array](#saving-system-data-into-array)
         - [Performance Visualization](#performance-visualization)
-    - [Part 5: Performance Testing](#part-5-performance-testing)
+    - [Part 5: Performance Testing in Gazebo](#part-5-performance-testing-in-gazebo)
 - [Packages used](#packages-used)
 - [Designer Details](#designer-details)
 - [Acknowledgements](#acknowledgements)
@@ -1073,6 +1074,29 @@ u_{4} = -(\dot{\phi}\dot{\theta}(I_{x}-I_{y})-I_{z}\ddot{\psi_{d}} + I_{z}\lambd
 \end{equation}
 $$
 
+### Tuning parameters
+
+The complete system is accurately tuned using 10 parameters:
+- $\lambda_{z}$
+- $\lambda_{\phi}$
+- $\lambda_{\theta}$
+- $\lambda_{\psi}$
+- $k_{z}$
+- $k_{\phi}$
+- $k_{\theta}$
+- $k_{\psi}$
+- $k_{p}$
+- $k_{d}$
+- $\gamma$
+
+High Values of $k$ parameter in sliding mode control would result in faster convergence to the sliding surface. But too aggressive convergence would also generate high amount of chattering due to overshoots.
+
+High Value of $\lambda$ parameter in sliding mode control would result in faster converge to zero error once the controller has reached the sliding surface but higher values of $\lambda$ would result in overshoots while trying to trace the trajectory.
+
+Too High value of $k_{p}$ would result into high destabilization and high control efforts in trying to stabilize `roll` and `pitch` oscillations. Also, high $k_{d}$ would result in a sluggish response which might cause the drone to deviate from it's path due to inclination at an angle. Too low $k_{d}$ would result in drone not able to stablize in presence of oscillations caused due to $k_{p}$.
+
+$\gamma$ would help reduce chattering effect by introducing the concept of acceptable position error in the controller. Too high of a $\gamma$ would result in higher error in controller. Too low of $\gamma$ would result in chattering in controller.
+
 ## Part 3: Programming the Controllers
 
 Implement a ROS node in Python or MATLAB to evaluate the performance of the
@@ -1415,10 +1439,48 @@ def visualization(x_series, y_series, z_series, traj_x_series, traj_y_series,tra
     plt.show()
 ```
 
-<!-- ## Part 5: Performance Testing
-The performance of our tuning is as shown below:
+## Part 5: Performance Testing in Gazebo
 
-![Tuned Performance](/Resources/Photos/trajectory.png) -->
+1. Open a terminal in Ubuntu, and spawn the Crazyflie 2.0 quadrotor on the Gazebo simulator
+
+    ```
+    roslaunch rotors_gazebo crazyflie2_without_controller.launch
+    ```
+    
+    Note that the Gazebo environment starts in the paused mode, so make sure that you start the simulation by clicking on the play button before proceed.
+2. We can now test the control script developed in Part 3 by running the script in a new terminal. The quadrotor must be controlled smoothly (no overshoot or oscillations) to track the trajectories generated in Part 1 and reach the five desired waypoints.
+    
+    To launch the rosnode to track the trajectories, type the following command:
+
+    ```
+    rosrun project main.py
+    ```
+3. Tune the performance of the drone to ensure a satisfactory control performance. 
+    
+    Our system is tuned as follows:
+    - $\lambda_{z} = 5$
+    - $\lambda_{\phi} = 10$
+    - $\lambda_{\theta} = 10$
+    - $\lambda_{\psi} = 5$
+    - $k_{z} = 25$
+    - $k_{\phi} = 150$
+    - $k_{\theta} = 150$
+    - $k_{\psi} = 20$
+    - $k_{p} = 50$
+    - $k_{d} = 5$
+    - $\gamma = 0.01$
+
+    The performance of our tuning is as shown below:
+    
+    ![Tuned Performance](/Resources/Photos/trajectory.png)
+
+    Click the Video below to see the drone simulation: 
+
+    <a href="https://youtu.be/Pxz6nFl5Y7Q">
+        <img src="Resources/Photos/Drone Performance Thumbnail.png" width="480" />
+    </a>
+
+    Our tuning resulted in an acceptable error of 0.01 with $e_{max} = 0.03$ at any possible times.
 
 # Packages used
 - [Symbolic Python (sympy)](https://github.com/sympy/sympy)
@@ -1448,27 +1510,3 @@ You may obtain a copy of the License at
 _https://www.gnu.org/licenses/gpl-3.0.en.html_
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-
-<!-- # Documentation TODO
-
-- [X] Introduction
-- [X] How to run the project
-- [X] Interested in editing the project for your own use?
-  - [X] Collect the Softwares to setup the project
-    - [X] Collect the Project Files
-    - [X] Unity Hub
-    - [X] Android Studio
-    - [X] Android NDK
-    - [X] VS Code
-  - [X] Setup Environment
-    - [X] Setup Directories
-  - [X] Setup Project
-    - [X] Launch Project in Unity
-    - [X] Import Essential Packages
-    - [X] Setup Android Device for App Emulation
-    - [X] What each script contains?
-    - [X] Export the Android App
-- [X] Tools Used
-- [X] Designer Details
-- [X] Acknowledgements
-- [X] License -->

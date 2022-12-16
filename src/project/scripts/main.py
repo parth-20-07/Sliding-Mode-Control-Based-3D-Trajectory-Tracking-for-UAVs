@@ -76,7 +76,7 @@ class Quadrotor():
         self.motor_vel = np.array([0, 0, 0, 0])
 
         # Acceptable Tolerance
-        self.tol = 1
+        self.tol = 0.01
 
     def traj_evaluate(self):
         # Switching the desired trajectory according to time
