@@ -1117,6 +1117,9 @@ Too High value of $k_{p}$ would result into high destabilization and high contro
 
 $\gamma$ would help reduce chattering effect by introducing the concept of acceptable position error in the controller. Too high of a $\gamma$ would result in higher error in controller. Too low of $\gamma$ would result in chattering in controller.
 
+Our tuned parameters are included in [Part 5: Performance Testing in Gazebo](#part-5-performance-testing-in-gazebo)
+
+
 ## Part 3: Programming the Controllers
 
 Implement a ROS node in Python or MATLAB to evaluate the performance of the
@@ -1490,7 +1493,7 @@ def visualization(x_series, y_series, z_series, traj_x_series, traj_y_series,tra
     - $k_{d} = 5$
     - $\gamma = 0.01$
 
-    The performance of our tuning is as shown below:
+    The performance of our tuning is as shown below. Actual trajectory is plotted in color `red` and the desired trajectories are plotted in color `blue`.
     
     ![Tuned Performance](/Resources/Photos/trajectory.png)
 
