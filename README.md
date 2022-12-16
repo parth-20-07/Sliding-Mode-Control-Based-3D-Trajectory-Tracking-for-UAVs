@@ -26,7 +26,7 @@
         - [Limiting Rotor Velocity](#limiting-rotor-velocity)
         - [Calculating Omega](#calculating-omega)
         - [Publishing the Rotor Values to topic](#publishing-the-rotor-values-to-topic)
-    - [Parth 4: Plotting the system performance](#parth-4-plotting-the-system-performance)
+    - [Part 4: Plotting the system performance](#part-4-plotting-the-system-performance)
         - [Saving System Data into Array](#saving-system-data-into-array)
         - [Performance Visualization](#performance-visualization)
     - [Part 5: Performance Testing in Gazebo](#part-5-performance-testing-in-gazebo)
@@ -1358,7 +1358,7 @@ motor_speed.angular_velocities = [self.motor_vel[0], self.motor_vel[1], self.mot
 self.motor_speed_pub.publish(motor_speed)
 ```
 
-## Parth 4: Plotting the system performance
+## Part 4: Plotting the system performance
 
 Once the program is shut down, the actual trajectory and desired trajectory is saved into a `log.pkl` file under the scripts directory. A separate Python script is made to help visualize the trajectory from the saved `log.pkl` file. _Because we are too lazy to call the script every time we try to run the simulation, we have automated that portion and the system performance plot will automatically pop-up when the simulation is finished._
 
