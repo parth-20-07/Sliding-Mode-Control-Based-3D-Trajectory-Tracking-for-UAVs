@@ -4,32 +4,32 @@
 
 - [Introduction](#introduction)
 - [Setup the environment](#setup-the-environment)
-    - [Install ROS1 Noetic](#install-ros1-noetic)
-    - [Setup Crazyflie 2.0 Quadrotor in Gazebo](#setup-crazyflie-20-quadrotor-in-gazebo)
+  - [Install ROS1 Noetic](#install-ros1-noetic)
+  - [Setup Crazyflie 2.0 Quadrotor in Gazebo](#setup-crazyflie-20-quadrotor-in-gazebo)
 - [Dynamic Model](#dynamic-model)
 - [Problem Statement](#problem-statement)
-    - [Part 1: Trajectory Generation](#part-1-trajectory-generation)
-    - [Part 2: Controller Design](#part-2-controller-design)
-        - [Designing Controller 1 to control z](#designing-controller-1-to-control-z)
-        - [Designing Controller 2 to control phi](#designing-controller-2-to-control-phi)
-        - [Designing Controller 3 to control theta](#designing-controller-3-to-control-theta)
-        - [Designing Controller 4 to control psi](#designing-controller-4-to-control-psi)
-        - [Tuning parameters](#tuning-parameters)
-    - [Part 3: Programming the Controllers](#part-3-programming-the-controllers)
-        - [Fetching the current drone parameters](#fetching-the-current-drone-parameters)
-        - [Controller 1](#controller-1)
-        - [Controller 2](#controller-2)
-        - [Controller 3](#controller-3)
-        - [Controller 4](#controller-4)
-        - [Saturation Function](#saturation-function)
-        - [Allocation Matrix](#allocation-matrix)
-        - [Limiting Rotor Velocity](#limiting-rotor-velocity)
-        - [Calculating Omega](#calculating-omega)
-        - [Publishing the Rotor Values to topic](#publishing-the-rotor-values-to-topic)
-    - [Part 4: Plotting the system performance](#part-4-plotting-the-system-performance)
-        - [Saving System Data into Array](#saving-system-data-into-array)
-        - [Performance Visualization](#performance-visualization)
-    - [Part 5: Performance Testing in Gazebo](#part-5-performance-testing-in-gazebo)
+  - [Part 1: Trajectory Generation](#part-1-trajectory-generation)
+  - [Part 2: Controller Design](#part-2-controller-design)
+    - [Designing Controller 1 to control z](#designing-controller-1-to-control-z)
+    - [Designing Controller 2 to control phi](#designing-controller-2-to-control-phi)
+    - [Designing Controller 3 to control theta](#designing-controller-3-to-control-theta)
+    - [Designing Controller 4 to control psi](#designing-controller-4-to-control-psi)
+    - [Tuning parameters](#tuning-parameters)
+  - [Part 3: Programming the Controllers](#part-3-programming-the-controllers)
+    - [Fetching the current drone parameters](#fetching-the-current-drone-parameters)
+    - [Controller 1](#controller-1)
+    - [Controller 2](#controller-2)
+    - [Controller 3](#controller-3)
+    - [Controller 4](#controller-4)
+    - [Saturation Function](#saturation-function)
+    - [Allocation Matrix](#allocation-matrix)
+    - [Limiting Rotor Velocity](#limiting-rotor-velocity)
+    - [Calculating Omega](#calculating-omega)
+    - [Publishing the Rotor Values to topic](#publishing-the-rotor-values-to-topic)
+  - [Part 4: Plotting the system performance](#part-4-plotting-the-system-performance)
+    - [Saving System Data into Array](#saving-system-data-into-array)
+    - [Performance Visualization](#performance-visualization)
+  - [Part 5: Performance Testing in Gazebo](#part-5-performance-testing-in-gazebo)
 - [Packages used](#packages-used)
 - [Design Details](#design-details)
 - [License](#license)
@@ -37,10 +37,10 @@
 <!-- /TOC -->
 
 # Introduction
+
 The objective of this project is to develop a robust control scheme to enable a quadrotor to track desired trajectories in the presence of external disturbances.
 
 The control design under study will be tested on the Crazyflie 2.0 platform. Crazyflie is a quadrotor that is classified as a micro air vehicle (MAV), as it only weighs 27 grams and can fit in your hand. The size makes it ideal for flying inside a lab without trashing half the interior. Even though the propellers spin at high RPMs, they are soft and the torque in the motors is very low when compared to a brushless motor, making it relatively crash tolerant. The Crazyflie 2.0 features four 7mm coreless DC-motors that give the Crazyflie a maximum takeoff weight of 42g.
-
 
 The Crazyflie 2.0 is an open source project, with source code and hardware design both documented
 and available. For more information, see the link below:
@@ -56,82 +56,89 @@ Crazyflie 2.0 Quadrotor Gazebo Simulation
 
 _Note: The Complete project is build and tested on Ubuntu 20.04LTS with ROS Noetic and not tested on any other system. Kindly proceed with caution and loads of google usage for porting it to any other system. And as always, common sense is must before anything!!_
 
-
 # Setup the environment
 
 ## Install ROS1 Noetic
 
 1. Setup your sources.list
-    Setup your computer to accept software from packages.ros.org.
-    ```
-    sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
-    ```
+   Setup your computer to accept software from packages.ros.org.
+   ```
+   sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+   ```
 2. Set up your keys
-    ```
-    sudo apt install curl # if you haven't already installed curl
-    curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
-    ```
+   ```
+   sudo apt install curl # if you haven't already installed curl
+   curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | sudo apt-key add -
+   ```
 3. Installation
-    First, make sure your Debian package index is up-to-date:
-    ```
-    sudo apt update
-    ```
-    Desktop-Full Install: (Recommended) : Everything in Desktop plus 2D/3D simulators and 2D/3D perception packages
-    ```
-    sudo apt install ros-noetic-desktop-full
-    ```
+   First, make sure your Debian package index is up-to-date:
+   ```
+   sudo apt update
+   ```
+   Desktop-Full Install: (Recommended) : Everything in Desktop plus 2D/3D simulators and 2D/3D perception packages
+   ```
+   sudo apt install ros-noetic-desktop-full
+   ```
 4. Environment setup
-    You must source this script in every bash terminal you use ROS in.
-    ```
-    source /opt/ros/noetic/setup.bash
-    ```
-    It can be convenient to automatically source this script every time a new shell is launched. These commands will do that for you.
-    ```
-    echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
-    source ~/.bashrc
-    ```
+   You must source this script in every bash terminal you use ROS in.
+   ```
+   source /opt/ros/noetic/setup.bash
+   ```
+   It can be convenient to automatically source this script every time a new shell is launched. These commands will do that for you.
+   ```
+   echo "source /opt/ros/noetic/setup.bash" >> ~/.bashrc
+   source ~/.bashrc
+   ```
 5. Dependencies for building packages
-    Up to now you have installed what you need to run the core ROS packages. To create and manage your own ROS workspaces, there are various tools and requirements that are distributed separately. For example, [rosinstall](https://wiki.ros.org/rosinstall) is a frequently used command-line tool that enables you to easily download many source trees for ROS packages with one command.
-    
-    To install this tool and other dependencies for building ROS packages, run:
-    ```
-    sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
-    ```
-    Initialize rosdep
-    
-    Before you can use many ROS tools, you will need to initialize rosdep. rosdep enables you to easily install system dependencies for source you want to compile and is required to run some core components in ROS. If you have not yet installed rosdep, do so as follows.
-    ```
-    sudo apt install python3-rosdep
-    ```
-    With the following, you can initialize rosdep.
-    ```
-    sudo rosdep init
-    rosdep update
-    ```
+   Up to now you have installed what you need to run the core ROS packages. To create and manage your own ROS workspaces, there are various tools and requirements that are distributed separately. For example, [rosinstall](https://wiki.ros.org/rosinstall) is a frequently used command-line tool that enables you to easily download many source trees for ROS packages with one command.
+
+   To install this tool and other dependencies for building ROS packages, run:
+
+   ```
+   sudo apt install python3-rosdep python3-rosinstall python3-rosinstall-generator python3-wstool build-essential
+   ```
+
+   Initialize rosdep
+
+   Before you can use many ROS tools, you will need to initialize rosdep. rosdep enables you to easily install system dependencies for source you want to compile and is required to run some core components in ROS. If you have not yet installed rosdep, do so as follows.
+
+   ```
+   sudo apt install python3-rosdep
+   ```
+
+   With the following, you can initialize rosdep.
+
+   ```
+   sudo rosdep init
+   rosdep update
+   ```
+
 6. Create a workspace
-    ```
-    mkdir -p ~/rbe502_ros/src
-    cd ~/rbe502_ros
-    catkin_make
-    echo "source ~/rbe502_ros/devel/setup.bash" >> ~/.bashrc
-    source ~/rbe502_ros/devel/setup.bash
-    ```
+   ```
+   mkdir -p ~/rbe502_ros/src
+   cd ~/rbe502_ros
+   catkin_make
+   echo "source ~/rbe502_ros/devel/setup.bash" >> ~/.bashrc
+   source ~/rbe502_ros/devel/setup.bash
+   ```
 7. Install the Control and Effort Dependencies for Gazebo
-    ```
-    sudo apt-get update
-    sudo apt-get upgrade
-    sudo apt update
-    sudo apt-get install ros-noetic-ros-control ros-noetic-ros-controllers
-    sudo apt-get install ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-ros-control
-    ```
+   ```
+   sudo apt-get update
+   sudo apt-get upgrade
+   sudo apt update
+   sudo apt-get install ros-noetic-ros-control ros-noetic-ros-controllers
+   sudo apt-get install ros-noetic-gazebo-ros-pkgs ros-noetic-gazebo-ros-control
+   ```
 8. With all dependencies ready, we can build the ROS package by the following commands.
-    ```
-    cd ~/rbe502_ros
-    catkin_make
-    ```
+   ```
+   cd ~/rbe502_ros
+   catkin_make
+   ```
 
 ## Setup Crazyflie 2.0 Quadrotor in Gazebo
+
 To set up the Crazyflie 2.0 quadrotor in Gazebo, we need to install additional ROS dependencies for building packages as below:
+
 ```
 sudo apt update
 sudo apt install ros-noetic-joy ros-noetic-octomap-ros ros-noetic-mavlink
@@ -142,6 +149,7 @@ sudo apt-get install ros-noetic-ros libgoogle-glog-dev
 ```
 
 We are now ready to create a new ROS workspace and download the ROS packages for the robot:
+
 ```
 mkdir -p ~/rbe502_project/src
 cd ~/rbe502_project/src
@@ -153,11 +161,13 @@ cd ~/rbe502_project/src
 git clone -b dev/ros-noetic https://github.com/gsilano/CrazyS.git
 git clone -b med18_gazebo9 https://github.com/gsilano/mav_comm.git
 ```
+
 _Note: a new ROS workspace is needed for the project, because the CrazyS Gazebo package is built using the `catkin build` tool, instead of `catkin_make`._
 
 _Note: -j1 in catkin build is for safety so it does not cause you computer to hang. It makes your code to build on just one core. Slow but ensures it compiles without issues_
 
 We need to build the project workspace using `python_catkin_tools` , therefore we need to configure it:
+
 ```
 cd ~/rbe502_project
 rosdep install --from-paths src -i
@@ -165,19 +175,25 @@ rosdep update
 catkin config --cmake-args -DCMAKE_BUILD_TYPE=Release -DCATKIN_ENABLE_TESTING=False
 catkin build -j1
 ```
+
 _This is gonna take a lot of time. Like a real lot. So maybe make yourself a cup of coffee meanwhile? If you don't like coffee, I don't know your motivation to live :worried:_
 
 Do not forget to add sourcing to your `.bashrc` file:
+
 ```
 echo "source ~/rbe502_project/devel/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
+
 With all dependencies ready, we can build the ROS package by the following commands:
+
 ```
 cd ~/rbe502_project
 catkin build -j1
 ```
+
 To spawn the quadrotor in Gazebo, we can run the following launch file:
+
 ```
 roslaunch rotors_gazebo crazyflie2_without_controller.launch
 ```
@@ -185,6 +201,7 @@ roslaunch rotors_gazebo crazyflie2_without_controller.launch
 Congrats, All the setup is done for the simulation to start. You can start writing your own algorithm if you want to!! :smiley:
 
 # Dynamic Model
+
 The quadrotor model is shown below.
 
 ![Drone Frames](/Resources/Photos/Drone%20Frames.png)
@@ -242,7 +259,7 @@ u_{4}
 
 where $k_{F}$ and $k_{M}$ denote the propeller thrust factor and moment factor, respectively.
 
-Considering the generalized coordinates and the control inputs defined above, the simplified equations of motion (assuming small angles) for the translational  accelerations and body frame angular accelerations are derived as:
+Considering the generalized coordinates and the control inputs defined above, the simplified equations of motion (assuming small angles) for the translational accelerations and body frame angular accelerations are derived as:
 
 $$
 \begin{equation}
@@ -280,7 +297,7 @@ $$
 \end{equation}
 $$
 
-where $m$ is the quadrotor mass, $g$ is the gravitational acceleration, $I_{p}$ is the propeller moment of inertia, and $I_{x}$, $I_{y}$, $I_{z}$ indicate the quadrotor moment of inertia along the $x$, $y$ and $z$ axes, respectively. Moreover, the term $\Omega$ is expressed as: 
+where $m$ is the quadrotor mass, $g$ is the gravitational acceleration, $I_{p}$ is the propeller moment of inertia, and $I_{x}$, $I_{y}$, $I_{z}$ indicate the quadrotor moment of inertia along the $x$, $y$ and $z$ axes, respectively. Moreover, the term $\Omega$ is expressed as:
 
 ```math
 \begin{equation}
@@ -304,15 +321,16 @@ The physical parameters for the Crazyflie 2.0 hardware are listed below
 
 _Remark 1:_ As shown in the equations of motion above, the quadrotor system has six DoF, with only four control inputs. As a result, the control of quadrotors is typically done by controlling only the altitude $z$ and the roll-pitch-yaw angles.
 
-
 # Problem Statement
-Design a sliding mode controller for _altitude_ and _attitude_ control of the Crazyflie 2.0 to enable the quadrotor to track desired trajectories and visit a set of desired waypoints. 
+
+Design a sliding mode controller for _altitude_ and _attitude_ control of the Crazyflie 2.0 to enable the quadrotor to track desired trajectories and visit a set of desired waypoints.
 
 The main components of the project are described below.
 
 ## Part 1: Trajectory Generation
 
 Write a MATLAB or Python script to generate quintic (fifth-order) trajectories (position, velocity and acceleration) for the translational coordinates $(x, y, z)$ of Crazyflie. The quadrotor is supposed to start from the origin $p_{0} = (0, 0, 0)$ and visit five waypoints in sequence. The waypoints to visit are:
+
 - $p_{0} = (0, 0, 0)$ to $p_{1} = (0, 0, 1)$ in 5 seconds
 - $p_{1} = (0, 0, 1)$ to $p_{2} = (1, 0, 1)$ in 15 seconds
 - $p_{2} = (1, 0, 1)$ to $p_{3} = (1, 1, 1)$ in 15 seconds
@@ -407,27 +425,26 @@ q_{f}\\
 \end{bmatrix}
 ```
 
-
 Using this, the resulting equations of motion are:
 
 Trajectory 1:
 
 ```math
-p_{1d}(t) = 
+p_{1d}(t) =
 \begin{bmatrix}
 0 & 0 & 0.0800t^3-0.0240t^4+0.0019t^5\notag
 \end{bmatrix}
 ```
 
 ```math
-v_{1d}(t) = 
+v_{1d}(t) =
 \begin{bmatrix}
 0 & 0 & 0.2400t^2-0.0960t^3+0.0096t^4\notag
 \end{bmatrix}
 ```
 
 ```math
-a_{1d}(t) = 
+a_{1d}(t) =
 \begin{bmatrix}
 0 & 0 & 0.4800t-0.2880t^2+0.0384t^4\notag
 \end{bmatrix}
@@ -436,21 +453,21 @@ a_{1d}(t) =
 Trajectory 2:
 
 ```math
-p_{2d}(t) = 
+p_{2d}(t) =
 \begin{bmatrix}
 0.0030t^3-2.9630*10^{-4}t^4+7.9012*10^{-6}t^5 & 0 & 1\notag
 \end{bmatrix}
 ```
 
 ```math
-v_{2d}(t) = 
+v_{2d}(t) =
 \begin{bmatrix}
 0.0089t^2-0.0012t^3+3.9506*10^{-5}t^4 & 0 & 0\notag
 \end{bmatrix}
 ```
 
 ```math
-a_{2d}(t) = 
+a_{2d}(t) =
 \begin{bmatrix}
 0.0178t - 0.0036t^2+1.5802*10^{-4}t^3 & 0 & 0\notag
 \end{bmatrix}
@@ -458,23 +475,22 @@ a_{2d}(t) =
 
 Trajectory 3:
 
-
 ```math
-p_{3d}(t) = 
+p_{3d}(t) =
 \begin{bmatrix}
 1 & 0.0030t^3-2.9630*10^{-4}t^4+7.9012*10^{-6}t^5 & 1\notag
 \end{bmatrix}
 ```
 
 ```math
-v_{3d}(t) = 
+v_{3d}(t) =
 \begin{bmatrix}
 0 & 0.0089t^2-0.0012t^3+3.9506*10^{-5}t^4 & 0\notag
 \end{bmatrix}
 ```
 
 ```math
-a_{3d}(t) = 
+a_{3d}(t) =
 \begin{bmatrix}
 0 & 0.0178t-0.0036t^2+1.5802*10^{-4}t^3 & 0\notag
 \end{bmatrix}
@@ -482,23 +498,22 @@ a_{3d}(t) =
 
 Trajectory 4:
 
-
 ```math
-p_{4d}(t) = 
+p_{4d}(t) =
 \begin{bmatrix}
 1- 0.0030t^3+2.9630*10^{-4}t^4-7.9012*10^{-6}t^5 & 1 & 1\notag
 \end{bmatrix}
 ```
 
 ```math
-v_{4d}(t) = 
+v_{4d}(t) =
 \begin{bmatrix}
 -0.0089t^2+0.0012t^3-3.9506*10^{-5}t^4 & 0 & 0\notag
 \end{bmatrix}
 ```
 
 ```math
-a_{4d}(t) = 
+a_{4d}(t) =
 \begin{bmatrix}
 - 0.0178t+0.0036t^2-1.5802*10^{-4}t^3 & 0 & 0\notag
 \end{bmatrix}
@@ -506,23 +521,22 @@ a_{4d}(t) =
 
 Trajectory 5:
 
-
 ```math
-p_{5d}(t) = 
+p_{5d}(t) =
 \begin{bmatrix}
 0 & 1 - 0.0030t^3+2.9630*10^{-4}t^4-7.9012*10^{-6}t^5 & 1\notag
 \end{bmatrix}
 ```
 
 ```math
-v_{5d}(t) = 
+v_{5d}(t) =
 \begin{bmatrix}
 0 & - 0.0089t^2+0.0012t^3-3.9506*10^{-5}t^4 & 0\notag
 \end{bmatrix}
 ```
 
 ```math
-a_{5d}(t) = 
+a_{5d}(t) =
 \begin{bmatrix}
 0 & - 0.0178t+0.0036t^2-1.5802*10^{-4}t^3 & 0\notag
 \end{bmatrix}
@@ -632,7 +646,6 @@ $$
 65 s < t < 70 s : p_{5} - p_{6}
 $$
 
-
 $p_{6}$ ensures that drone lands so it does not crash when the simulation ends.
 
 Each condition is used to set the values of initial and final variables for trajectory evaulation which include time, position, velocity and acceleration.
@@ -724,6 +737,7 @@ yd_ddot = 2*ay[2] + 6*ay[3]*t + 12*ay[4]*t**2 + 20*ay[5]*t**3
 zd_ddot = 2*az[2] + 6*az[3]*t + 12*az[4]*t**2 + 20*az[5]*t**3
 
 ```
+
 In the condition when the complete trajectory is traced, the origin is returned with zero velocity and acceleration to power off the drone.
 
 ```
@@ -763,7 +777,6 @@ $$
 \theta_{d}=sin^{-1}(\frac{F_{x}}{u_{1}})\tag{e}
 $$
 
-
 $$
 \phi_{d}=sin^{-1}(\frac{-F_{y}}{u_{1}})\tag{f}
 $$
@@ -786,7 +799,7 @@ The resulting discrepancy can be considered as an _external disturbance_ that is
 
 _Remark 4:_ When designing the sliding mode control laws, assume that all the model parameters are known. In fact, the objective of this assignment is to design a sliding mode controller to be robust under reasonable external disturbances
 
-**Solution:** Four sliding mode controller will be needed to control the drone. $s_{1}, s_{2}, s_{3}, s_{4}$ will control $u_{1}, u_{2}, u_{3}, u_{4}$ respectively, which in turn will control  $z, \phi, \theta$, and $\psi$ respectively.
+**Solution:** Four sliding mode controller will be needed to control the drone. $s_{1}, s_{2}, s_{3}, s_{4}$ will control $u_{1}, u_{2}, u_{3}, u_{4}$ respectively, which in turn will control $z, \phi, \theta$, and $\psi$ respectively.
 
 ### Designing Controller 1 to control z
 
@@ -863,8 +876,6 @@ $$
 u_{1} = - \frac{m}{cos\phi cos\theta}(-g - \ddot{z_{d}} + \lambda_{z}(\dot{z}-\dot{z_{d}}) + K_{z}sat(s_1))\tag{A}
 \end{equation}
 $$
-
-
 
 ### Designing Controller 2 to control phi
 
@@ -1097,6 +1108,7 @@ $$
 ### Tuning parameters
 
 The complete system is accurately tuned using 10 parameters:
+
 - $\lambda_{z}$
 - $\lambda_{\phi}$
 - $\lambda_{\theta}$
@@ -1119,7 +1131,6 @@ $\gamma$ would help reduce chattering effect by introducing the concept of accep
 
 Our tuned parameters are included in [Part 5: Performance Testing in Gazebo](#part-5-performance-testing-in-gazebo)
 
-
 ## Part 3: Programming the Controllers
 
 Implement a ROS node in Python or MATLAB to evaluate the performance of the
@@ -1131,11 +1142,12 @@ control design on the Crazyflie 2.0 quadrotor in Gazebo. You can create a new RO
 
 The drone publishes current _pose_ on `/crazyflie2/ground_truth/odometry` topic.
 
-We have created a subscriber that subscribes to this topic and converts it into $(x,y,z)$, $(\dot{x},\dot{y},\dot{z})$, $(\phi,\theta,\psi)$ and  $(\dot\phi,\dot\theta,\dot\psi)$ inside the `def odom_callback(self, msg)` function.
+We have created a subscriber that subscribes to this topic and converts it into $(x,y,z)$, $(\dot{x},\dot{y},\dot{z})$, $(\phi,\theta,\psi)$ and $(\dot\phi,\dot\theta,\dot\psi)$ inside the `def odom_callback(self, msg)` function.
 
 ### Controller 1
 
 Controller 1 is implemented as follows
+
 ```
 s1_error_dot = vel_z-zd_dot
 s1_error = pos_z-zd
@@ -1293,6 +1305,7 @@ def saturation(self, sliding_function):
 ```
 
 The saturation function works as follows for acceptable error $(\gamma)$ defined by `self.tol`:
+
 - When $s > \gamma$, saturation function returns 1
 - When $-\gamma < s < \gamma$, saturation function returns $\frac{s}{\gamma}$
 - When $s < -\gamma$, saturation function returns -1
@@ -1334,6 +1347,7 @@ self.motor_vel = np.sqrt(np.dot(alloc_mat, u_mat))
 ### Limiting Rotor Velocity
 
 It might happen during the control that the required velocity to control the drone is much higher than actually the drone can apply. We need to limit the maximum possible drone velocity. Max possible drone velocity for us is $\omega_{max} = 2618 rad/s$.
+
 ```
 for i in range(4):
     if (self.motor_vel[i] > self.w_max):
@@ -1343,6 +1357,7 @@ for i in range(4):
 ### Calculating Omega
 
 $\Omega$ needs to be calculated to determine $u_2, u_3, u_4$ as indicated from $(b)$. That is done as follows
+
 ```
 self.ohm = self.motor_vel[0]-self.motor_vel[1] + self.motor_vel[2]-self.motor_vel[2]
 ```
@@ -1363,6 +1378,7 @@ self.motor_speed_pub.publish(motor_speed)
 Once the program is shut down, the actual trajectory and desired trajectory is saved into a `log.pkl` file under the scripts directory. A separate Python script is made to help visualize the trajectory from the saved `log.pkl` file. _Because we are too lazy to call the script every time we try to run the simulation, we have automated that portion and the system performance plot will automatically pop-up when the simulation is finished._
 
 ### Saving System Data into Array
+
 The desired and actual trajectory is saved into arrays to be plotted. This is done in every iteration using:
 
 ```
@@ -1466,46 +1482,48 @@ def visualization(x_series, y_series, z_series, traj_x_series, traj_y_series,tra
 
 1. Open a terminal in Ubuntu, and spawn the Crazyflie 2.0 quadrotor on the Gazebo simulator
 
-    ```
-    roslaunch rotors_gazebo crazyflie2_without_controller.launch
-    ```
-    
-    Note that the Gazebo environment starts in the paused mode, so make sure that you start the simulation by clicking on the play button before proceed.
+   ```
+   roslaunch rotors_gazebo crazyflie2_without_controller.launch
+   ```
+
+   Note that the Gazebo environment starts in the paused mode, so make sure that you start the simulation by clicking on the play button before proceed.
+
 2. We can now test the control script developed in Part 3 by running the script in a new terminal. The quadrotor must be controlled smoothly (no overshoot or oscillations) to track the trajectories generated in Part 1 and reach the five desired waypoints.
-    
-    To launch the rosnode to track the trajectories, type the following command:
 
-    ```
-    rosrun project main.py
-    ```
-3. Tune the performance of the drone to ensure a satisfactory control performance. 
-    
-    Our system is tuned as follows:
-    - $\lambda_{z} = 5$
-    - $\lambda_{\phi} = 10$
-    - $\lambda_{\theta} = 10$
-    - $\lambda_{\psi} = 5$
-    - $k_{z} = 25$
-    - $k_{\phi} = 150$
-    - $k_{\theta} = 150$
-    - $k_{\psi} = 20$
-    - $k_{p} = 50$
-    - $k_{d} = 5$
-    - $\gamma = 0.01$
+   To launch the rosnode to track the trajectories, type the following command:
 
-    The performance of our tuning is as shown below. Actual trajectory is plotted in color `red` and the desired trajectories are plotted in color `blue`.
-    
-    ![Tuned Performance](/Resources/Photos/trajectory.png)
+   ```
+   rosrun project main.py
+   ```
 
-    Click the Video below to see the drone simulation: 
+3. Tune the performance of the drone to ensure a satisfactory control performance.
 
-    <a href="https://youtu.be/Pxz6nFl5Y7Q">
-        <img src="Resources/Photos/Drone Performance Thumbnail.png" width="480" />
-    </a>
+   Our system is tuned as follows:
+
+   - $\lambda_{z} = 5$
+   - $\lambda_{\phi} = 10$
+   - $\lambda_{\theta} = 10$
+   - $\lambda_{\psi} = 5$
+   - $k_{z} = 25$
+   - $k_{\phi} = 150$
+   - $k_{\theta} = 150$
+   - $k_{\psi} = 20$
+   - $k_{p} = 50$
+   - $k_{d} = 5$
+   - $\gamma = 0.01$
+
+   The performance of our tuning is as shown below. Actual trajectory is plotted in color `red` and the desired trajectories are plotted in color `blue`.
+
+![Tuned Performance](/Resources/Photos/trajectory.png)
+
+    Click the Video below to see the drone simulation:
+
+[![tuned-performance](https://img.youtube.com/vi/Pxz6nFl5Y7Q/0.jpg)](https://www.youtube.com/watch?v=Pxz6nFl5Y7Q)
 
     Our tuning resulted in an acceptable error of 0.01 with $e_{max} = 0.03$ at any possible times.
 
 # Packages used
+
 - [math](https://docs.python.org/3/library/math.html)
 - [numpy](https://numpy.org/)
 - [rospy](http://wiki.ros.org/rospy)
@@ -1522,7 +1540,6 @@ def visualization(x_series, y_series, z_series, traj_x_series, traj_y_series,tra
 - Designed by:
   - [Parth Patel](mailto:parth.pmech@gmail.com)
   - [Prarthana Sigedar](mailto:prarthana.sigedar@gmail.com)
-
 
 # License
 
